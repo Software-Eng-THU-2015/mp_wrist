@@ -14,9 +14,9 @@ import json
 from wechatpy.utils import to_text, to_binary
 from wechatpy.client import WeChatClient
 
-APP_ID = "wx87b3855d89436d96"
-APP_SECRET = "4d68e68b7f53bc0c78752605b0dab364"
-TOKEN = "chendaxixi"
+APP_ID = ""
+APP_SECRET = ""
+TOKEN = ""
 client = WeChatClient(APP_ID, APP_SECRET)
 DEVICE_BASE_URL = 'https://api.weixin.qq.com/device/'
 MEDIA_BASE_URL = "https://api.weixin.qq.com/cgi-bin/media/"
