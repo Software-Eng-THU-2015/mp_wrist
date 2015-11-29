@@ -4,21 +4,23 @@ import shelve
 from django.core.management.base import BaseCommand, CommandError
 from bongdata.models import BongData
 
-token_url = "http://open-test.bong.cn/oauth/token"
-url = "http://open-test.bong.cn/1/bongday/blocks/"
-file_url = "/data/www/wrist/bongdata.shelve"
+g_data = [
+ "token_url": "http://open-test.bong.cn/oauth/token",
+ "url": "http://open-test.bong.cn/1/bongday/blocks/",
+ "file_url": "/data/www/wrist/bongdata.shelve",
+ "user_num": 9,
+ "file": None
+]
 
-def getToken():
-    f = shelve.open(file_url)
-    client_id = f["client_id"]
-    client_sec = f["client_sec"]
-    refresh_token = f["refresh_token"]
-    res = requests.request(method="get", url="%s?client_id=%s&grant_type=refresh_token&client_secret=%s&refresh_token=%s" % (token_url, client_id, client_sec, refresh_token))
+def getToken(user, uid, client_id, client_sec):
+    f = g_data["file"]
+    refresh_token = f[user]["refresh_token"]
+    res = requests.request(method="get", url="%s?client_id=%s&grant_type=refresh_token&client_secret=%s&refresh_token=%s" % (g_data["token_url"], client_id, client_sec, refresh_token))
     res.encoding = "utf-8"
     data = res.json()
-    f["access_token"] = data["access_token"]
-    f["refresh_token"] = data["refresh_token"]
-    f.close()    
+    if "error" in data:
+        return "error"
+    f[user] = {"uid": uid, "access_token": data["access_token"], "refresh_token": data["refresh_token"]}  
     return data["access_token"]
 
 def monthDays(year, month):
@@ -52,27 +54,27 @@ def modifiedData():
         d3.append(d4[i])
     return d3
 
-def getData():
-    f = shelve.open(file_url)
-    uid = f["uid"]
-    access_token = f["access_token"]
-    f.close()
+def getData(user, uid, access_token, client_id, client_sec):
     tmp = modifiedData()
-    date = "%4d%2d%2d" % (tmp[0], tmp[1], tmp[2])
+    date = "%04d%02d%02d" % (tmp[0], tmp[1], tmp[2])
     res = requests.request(method="get", url="%s%s?uid=%s&access_token=%s" % (url, date, uid, access_token))
     res.encoding = "utf-8"
     data = res.json()
     if "error" in data:
-        res = requests.request(method="get", url="%s%s?uid=%s&access_token=%s" % (url, date, uid, getToken()))
+        access_token = getToken(user, uid, client_id, client_sec)
+        if access_token == "error":
+            return -1
+        res = requests.request(method="get", url="%s%s?uid=%s&access_token=%s" % (url, date, uid, access_token))
         res.encoding = "utf-8"
         data = res.json()
-#    print data
     data = data["value"]
     for item in data:
         try:
             save_item = BongData.objects.get(startTime=item["startTime"])
         except:
             save_item = BongData(startTime=item["startTime"])
+        save_item.user = int(user)
+        save_item.userId = uid
         if "endTime" in item:
             save_item.endTime=item["endTime"]
         if "type" in item:
@@ -105,5 +107,14 @@ def getData():
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        getData()
-#        print "hello world"
+        f = shelve.open(file_url)
+        g_data["file"] = f
+        client_id = f["client_id"]
+        client_sec = f["client_sec"]
+        for i in xrange(user_num):
+            user = str(i)
+            uid = f[user]["uid"]
+            access_token = f[user]["access_token"]
+            getData(user, uid, access_token, client_id, client_sec)
+        f.close()
+        print "hello world"

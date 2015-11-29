@@ -3,6 +3,8 @@ from django.db import models
 # Create your models here.
 
 class BongData(models.Model):
+    user = models.IntegerField(default=0)
+    userId = models.CharField(max_length = 30)
     startTime = models.CharField(max_length = 30)
     endTime = models.CharField(max_length = 30)
     type = models.IntegerField(default=0)
@@ -20,4 +22,4 @@ class BongData(models.Model):
     score = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return "%s %s" % (self.startTime, self.endTime)
+        return "%d:%s %s" % (self.user, self.startTime, self.endTime)
