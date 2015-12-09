@@ -55,6 +55,8 @@ def modifiedData():
     return d3
 
 def getData(user, uid, access_token, client_id, client_sec):
+    if uid == "":
+        return
     tmp = modifiedData()
     date = "%04d%02d%02d" % (tmp[0], tmp[1], tmp[2])
     res = requests.request(method="get", url="%s%s?uid=%s&access_token=%s" % (url, date, uid, access_token))
@@ -63,7 +65,7 @@ def getData(user, uid, access_token, client_id, client_sec):
     if "error" in data:
         access_token = getToken(user, uid, client_id, client_sec)
         if access_token == "error":
-            return -1
+            return
         res = requests.request(method="get", url="%s%s?uid=%s&access_token=%s" % (url, date, uid, access_token))
         res.encoding = "utf-8"
         data = res.json()
@@ -75,6 +77,7 @@ def getData(user, uid, access_token, client_id, client_sec):
             save_item = BongData(startTime=item["startTime"])
         save_item.user = int(user)
         save_item.userId = uid
+        save_item.date = tmp[0] * 10000 + tmp[1] * 100 + tmp[2]
         if "endTime" in item:
             save_item.endTime=item["endTime"]
         if "type" in item:

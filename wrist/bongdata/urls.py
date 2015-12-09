@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import data
+from views import data, upload
 
 urlpatterns = [
     url(r'^$', data),
+    url(r'^upload/', upload)
 ]

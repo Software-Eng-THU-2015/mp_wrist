@@ -5,6 +5,7 @@ from django.db import models
 class BongData(models.Model):
     user = models.IntegerField(default=0)
     userId = models.CharField(max_length = 30)
+    date = models.IntegerField(default=0)
     startTime = models.CharField(max_length = 30)
     endTime = models.CharField(max_length = 30)
     type = models.IntegerField(default=0)

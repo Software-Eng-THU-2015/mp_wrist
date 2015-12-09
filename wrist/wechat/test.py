@@ -8,6 +8,11 @@ menu = {
    {  
       "name":u"个人数据",
       "sub_button":[
+      { 
+        "type":"view",
+        "name":u"绑定手环",
+        "url":"http://wrist.ssast2015.com/basic/bind"
+      },
 	  {
 		"type":"click",
 		"name":u"今日战况",
@@ -47,7 +52,7 @@ menu = {
 		"name":u"排行榜",
 		"key":"V1001_PLAN_RANK"
 	  }]
-   },
+  },
   {
       "name":u"激情比赛",
       "sub_button":[
@@ -66,7 +71,7 @@ menu = {
 		"name":u"所有比赛",
 		"key":"V1001_PLAN_SHOW"
 	  }]
-   }]
+  }]
 }
 
 print tools.menuCreate(menu)
