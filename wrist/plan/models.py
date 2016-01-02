@@ -6,25 +6,24 @@ from basic.models import User
 class Plan(models.Model):
     name = models.CharField(max_length=30, default="")
     description = models.TextField(default="")
-    createTime = models.CharField(max_length=30)
-    starttime = models.CharField(max_length=30)
-    endtime = models.CharField(max_length=30)
-    goal_0 = models.IntegerField(default=0)
-    goal_1 = models.IntegerField(default=0)
-    goal_2 = models.IntegerField(default=0)
-    images = models.TextField(default="")
-    owner = models.ForeignKey(User, related_name="owner_plan")
-    members = models.ManyToManyField(User, related_name="members_plan")
+    createTime = models.IntegerField(default=0)
+    startTime = models.CharField(max_length=30)
+    endTime = models.CharField(max_length=30)
+    endDate = models.IntegerField(default=0)
+    endDateTime = models.IntegerField(default=0)
+    goal = models.IntegerField(default=0)
+    image = models.CharField(max_length=200, default="")
+    owner = models.ForeignKey(User, related_name="user_plan_owner")
+    members = models.ManyToManyField(User, related_name="user_plan_members")
     goods = models.IntegerField(default=0)
+    finished = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
 
-class Tag(models.Model):
-    name = models.CharField(max_length=30)
-    plans = models.ManyToManyField(Plan, related_name="plan_tag")
-
+class PTag(models.Model):
+    name = models.CharField(max_length=30,default="")
+    plans = models.ManyToManyField(Plan, related_name="plan_ptag_plans")
+  
     def __unicode__(self):
         return self.name
-
-

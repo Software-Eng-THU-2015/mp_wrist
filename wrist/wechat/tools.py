@@ -20,7 +20,20 @@ TOKEN = "chendaxixi"
 client = WeChatClient(APP_ID, APP_SECRET)
 DEVICE_BASE_URL = 'https://api.weixin.qq.com/device/'
 MEDIA_BASE_URL = "https://api.weixin.qq.com/cgi-bin/media/"
+BIND_URL = "http://open-test.bong.cn/oauth/authorize?client_id=1419735044202&response_type=code&redirect_uri="
 tmp_media_id = None
+help_text = u"使用前请先绑定手环!\n本手环具有以下功能:\n\t1. 设置运动目标、查看每日排行榜\n\t2. 创建你的运动计划，开始有规划得运动吧!\n\t3. 开启一场新的比赛，勇与好友争高下\n\t4. 全新的等级、成就系统，更多未知的惊喜"
+domain = "http://wrist.ssast2015.com"
+calories_rate = 0.2389
+template_id = {
+  "msg": "Ol_wljfNXMY3mrjJ0bQZbtPkouEYmVwm3y_jnO7MIMY",
+  "data": "NY4KtzC5bkgYgSs3NwXoAnj_BsmYQADw7ek77OyTE84",
+  "progress": "XlK9vG6qz4zxE85BeZXGYh-7rk42I52nTnFvttsR_5o",
+  "levelUp": "57NOCPbd1ql3oyoNP8zfj1t5w1J55JMTAJTzwgw9K4w",
+  "archive": "RUMc13Gq8LEbfoIgSm30OM6zw_zhVbLm9NY22z-e8Ng",
+  "recommand": "tKQc7bBlaQwGaJ_1zrFsZEzWYHdQvvRe8eM_kUpfdvc",
+  "profile": "EL8BwZmeB0IIAXfwrpai-3FT0GMiEaYEw7MNpt-PDsc",
+}
 
 #校验签名是否正确
 def checkSignature(request):
@@ -29,7 +42,7 @@ def checkSignature(request):
         timestamp = request.GET["timestamp"]
         nonce = request.GET["nonce"]
     except:
-	return False
+        return False
 
     token = TOKEN
     tmp = [timestamp, nonce, token]
@@ -75,6 +88,10 @@ def uploadMedia(type, filename):
 #发送客服文本信息，user为openid
 def customSendText(user, content):
     return client.message.send_text(user, content)
+
+#发送客服模板消息
+def customSendTemplate(user, template_id, top_color, data, url):
+    return client.message.send_template(user, template_id, url, top_color, data)
 
 #发送客服图片信息，指定filename或者mediaId
 def customSendImage(user, filename, mediaId=None):
@@ -129,6 +146,3 @@ def createQrCode(deviceId, filename):
 #        return ticket
 #    except:
 #        return res
-
-if __name__ == "__main__":
-    print "python-wechat tools modified by chendaxixi"   

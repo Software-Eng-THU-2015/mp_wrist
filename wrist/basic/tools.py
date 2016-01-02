@@ -1,32 +1,58 @@
-import datetime
-from models import User, Data
+#-*- coding=utf-8 -*-
+
+import json
+from models import User, DayData
+
+bong_activity = [
+  [u"睡眠", u"深睡眠", u"浅睡眠", u"清醒"],
+  [u"剧烈运动", u"热身运动", u"健走", u"球类等运动", u"跑步", u"游泳", u"自行车"],
+  [u"休闲运动", u"静坐", u"散步", u"交通工具", u"活动"],
+  [u"摘下手环"],
+  [u"手环充电"],
+  [u"手环异常"]
+]
 
 class Object:
    def __init__(self):
        None
+def getDate():
+#    print "datetime:%s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+#    tmp = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S").split(" ")[0].split("-")
+#    for i in xrange(3):
+#        tmp[i] = int(tmp[i])
+#    return tmp[0] * 10000 + tmp[1] * 100 + tmp[2]
+    data = json.loads(open("/home/chendaxixi/scripts/date_time", "r").read())
+    return int(data["date"])
 
-def date_splitter(datetime):
-    d1,d2 = datetime.split(" ")
-    d1 = d1.split("-")
-    d2 = d2.split(":")
-    for i in xrange(3):
-        d1[i] = int(d1[i])
-        d2[i] = int(d2[i])
-    d0 = []
-    for i in xrange(3):
-        d0.append(d1[i])
-    for i in xrange(3):
-        d0.append(d2[i])
-    return d0
+def getDateTime():
+    data = json.loads(open("/home/chendaxixi/scripts/date_time", "r").read())
+    return int(data["datetime"])
 
-def leq(dt1, dt2):
-    flag = True
-    for i in xrange(6):
-        if dt1[i] < dt2[i]:
-            return True
-        else:
-            flag = dt1[i] == dt2[i]
-    return flag
+def last_time(date, datetime, endtime):
+    pass
+    
+def splitDate(datetime):
+    t1, t2 = datetime.split(" ")
+    t1 = t1.split("-")
+    t2 = t2.split(":")
+    for i in xrange(3):
+        t1[i] = int(t1[i])
+        t2[i] = int(t2[i])
+    return t1[0] * 10000 + t1[1] * 100 + t1[2], t2[0] * 10000 + t2[1] * 100 + t2[2]
+
+def getCreateTime(createTime):
+    return "1 Hour Ago"
+    now = getDateTime()
+    t1,t2 = splitDate(str(now))
+#    t3,t4 = splitDate(createTime)
+    t3,t4 = 10001,1000
+    h1 = t2 / 10000
+    h2 = t4 / 10000
+    return "%d Hours Ago" % (h1-h2)
+    
+def today_Calories(user):
+    dayData = DayData.objects.get(user=user,date=getDate())
+    return dayData.calories
 
 def monthDays(year, month):
     if month in [1,3,5,7,8,10,12]:
@@ -36,53 +62,7 @@ def monthDays(year, month):
     elif (not year % 100 == 0 and year % 4 == 0) or (year % 100 == 0 and year % 400 == 0):
         return 29
     else:
-        return 28
+        return 28    
 
-def modifiedData():
-    d1, d2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S").split(" ")
-    d3 = d1.split("-")
-    d4 = d2.split(":")
-    for i in xrange(3):
-        d3[i] = int(d3[i])
-        d4[i] = int(d4[i])
-    d4[0] += 8
-    if d4[0] > 23:
-        d4[0] -= 24
-        d3[2] += 1
-    if d3[2] > monthDays(d3[0], d3[1]):
-        d3[2] = 1
-        d3[1] += 1
-    if d3[1] > 12:
-        d3[1] = 1
-        d3[0] += 1
-    for i in xrange(3):
-        d3.append(d4[i])
-    return d3
-
-def valid(s1, e1, s2, e2):
-    rs1 = date_splitter(s1)
-    re1 = date_splitter(e1)
-    return leq(s2, rs1) and leq(re1, e2)
-
-def Calories(d1, d2, user):
-    result = 0
-    data = User.objects.get(openId=user).basic_data.all()
-    for item in data:
-        if valid(item.startTime, item.endTime, d1, d2):
-            result += item.calories
-    result = int(result / 4.1858)
-    return result    
-
-def today_Calories(user):
-    today = modifiedData()
-    today[3] = today[4] = today[5] = 0
-    tomorrow = today
-    tomorrow[2] += 1
-    if tomorrow[2] > monthDays(tomorrow[0], tomorrow[1]):
-        tomorrow[2] = 1
-        tomorrow[1] += 1
-    if tomorrow[1] > 12:
-        tomorrow[1] = 1
-        tomorrow[0] += 1
-    return Calories(today, tomorrow, user)
-
+def caloriesToStep(calories, height, weight):
+    return calories

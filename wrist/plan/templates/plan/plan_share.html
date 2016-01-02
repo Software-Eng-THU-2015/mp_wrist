@@ -1,78 +1,77 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/plan/css/semantic.min.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
-	<title>查看计划</title>
-	<style type="text/css">
+{% extends "base.html" %}
+{% block title %}计划广场{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/basic/css/semantic.min.css">
+    <style type="text/css">
 	#rankTable {
 		position: absolute;
 		left: 0;
 		right: 0;
 		width: 100%;
 	}
+    #userId {
+        display: none;
+    }
 	</style>
-</head>
-
-<body>
+{% endblock %}
+{% block javascript %}
+  <script src="/static/basic/js/semantic.min.js"></script>
+  <script src ="/static/plan/js/plan_share.js" ></script>
+{% endblock %}
+{% block main %}
 	<!-- Page container -->
+  <div id="userId">{{ data.userId }}</div>
   <div class="ui divided items">
-  {% for plan in plans %}
+  {% for item in data.list %}
     <div class="ui segment">
-      <div class="ui feed">
-      <div class="event">
-      <div class="label">
-        <img src="{{ plan.user_img }}">
-      </div>
-      <div class="content">
-        <div class="summary">
-          <a class="user">
-            {{ plan.creator }}
-          </a>
+      <div class="ui large feed">
+        <div class="event">
+          <img src={{ item.image }} class="ui avatar image">
+        <div class="content">
+          <div class="summary">
+            <a class="user">
+                {{ item.username}}
+            </a>
           <div class="date">
-            {{ plan.createTime }}
+            {{ item.createTime }}
+          </div>
           </div>
         </div>
-      </div>
-    </div>
+        </div>
     </div>
     <h3 class="ui header">
-      {{ plan.title }}
+      {{ item.name}}
     </h3>
     <div class="ui small images">
-      {% for item in plan.img %}
-      <img src="{{ item }}">
-	  {% endfor %}
+      <img src={{ item.plan_image }} >
     </div>
     <div class="extra text">
-      {{ plan.content }}
+      {{ item.description }}
     </div>
-    <p></p>
     <div class="extra">
-	 {% for item in plan.tags %}
-      <div class="ui label">{{ item }}</div>
-	  {% endfor %}
-    </p>
+     {% for tag in item.tags %}
+      <div class="ui label">{{ tag }}</div>
+     {% endfor %}
     <div class="ui two bottom attached buttons">
-    <div class="ui like button">
-      <i class="heart icon"></i>
+    {% if item.isLike %}
+    <div userId={{ item.userId }} class="ui red like button">
+    {% else %}
+    <div userId={{ item.userId }} class="ui like button">
+    {% endif %}
+        <i class="heart icon"></i>
       Like
     </div>
-    <div class="ui follow button">
-      <i class="paw icon"></i>
-      Follow
+    {% if item.isFollow %}
+    <div userId={{ item.userId }} class="ui blue follow button">
+        <i class="blue paw icon"></i>Following
+    {% else %}
+    <div userId={{ item.userId }} class="ui follow button">
+         <i class="paw icon"></i>Follow
+    {% endif %}
     </div>
-  </div>
     </div>
-
+    </div>
+   </div>
+   {% endfor %}
   </div>
-  {% endfor %}
-  </div>
-
-  <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-  <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="/static/plan/js/semantic.min.js"></script>
-  <script type="text/javascript" src="/static/plan/js/plan_share.js" ></script>
-</body>
-</html>
+{% endblock %}

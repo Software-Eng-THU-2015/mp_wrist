@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+	<title>创建比赛</title>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="/static/css/flat-ui.min.css" />
+	<link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="/static/css/fileinput.min.css" />
+	<link rel="stylesheet" href="/static/plan/css/plan_make.css" />
+    <script type="text/javascript" src="/static/js/base.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/handlebars.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript" src="/static/js/fileinput.min.js"></script>
+    <script type="text/javascript" src="/static/js/fileinput_locale_zh.js"></script>
+<body>
+    <script class="template" type="text/x-handlebars-template">
+    <div class="container">
+        <div class="center">
+            <div class="row-narrow white-box-shadow">
+                <div class="row-narrow-center">
+				<form method="POST" action="/data/plan/make" enctype="multipart/form-data">
+					<fieldset>
+                    	<legend id="location_flag">创建计划</legend>
+                    	<div class="form-group" id="name">
+					    	<label>计划名称：</label>
+					    	<input type="text" value="" class="form-control" name="plan_name">
+					    </div>
+                        <div class="form-group" id="begintime">
+                            <label>开始时间:</label>
+                            <div class="input-append date form_datetime">
+                                <input class="pick-date" size="32" type="text" value="" name="begintime" readonly>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group" id="endtime">
+                            <label>结束时间:</label>
+                            <div class="input-append date form_datetime">
+                                <input class="pick-date" size="32" type="text" value="" name="endtime" readonly>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group" id="goal">
+                            <label>计划目标:</label>
+                            <input type="text" value="" placeholder="(可选：消耗热量，单位为千卡)" class="form-control" name="goal">
+                        </div>
+                        <div class="form-group" id="tags">
+                                <label>计划标签：</label>
+                                <input type="text" value="" placeholder="(可选)" class="form-control" name="tags">
+                                <span id="tag_add" class="fui-plus-circle"></span> 
+                                <div class="btn-group">
+                                    <ul role="menu" class="dropdown-menu">
+                                    {{#each tags}}
+                                        <li><a>{{this}}</a></li>
+                                    {{/each}}
+                                    </ul>
+                                </div>
+                        </div>
+                        <div class="form-group" id="friends">
+                                <label>邀请好友：</label>
+                                <input type="text" value="" placeholder="(可选)" class="form-control" name="friends">
+                                <span id="friend_add" class="fui-plus-circle"></span> 
+                                <div class="btn-group">
+                                    <ul role="menu" class="dropdown-menu">
+                                    {{#each friends}}
+                                        <li><a>{{this}}</a></li>
+                                    {{/each}}
+                                    </ul>
+                                </div>
+                        </div>
+                        <div class="form-group" id="comment">
+                            <label for="comment">计划描述：</label>
+                            <textarea class="form-control" rows="5" id="comment"></textarea>         				
+                        </div>
+                        <div class="form-group" id="image">
+                            <label>添加图片</label>
+                            <input id="input_image" type="file" class="file">
+                        </div>
+                        <div class="form-group center">
+                            <input type="submit" value="确认创建" class="submit-button"/>
+                        </div>
+					</fieldset>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/static/plan/js/plan_make.js"></script>
+    </script>
+    <script>
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = "http://wrist.ssast2015.com/data/plan/make";
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            $("body").html(template(json));
+        });
+    </script>
+</body>

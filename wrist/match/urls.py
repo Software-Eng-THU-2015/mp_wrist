@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from wechat import server
+from match import views
 
 urlpatterns = [
+    url(r'^redirect', views.redirect_match),
+    url(r'^data/make', views.match_make),
+    url(r'^submit/make', views.submit_make),
+    url(r'^data/square', views.match_square),
+    url(r'^data/check', views.match_check),
 ]

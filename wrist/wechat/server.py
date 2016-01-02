@@ -6,13 +6,16 @@
 
 __author__ = "chendaxixi"
 
+import random
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from wechat import tools
 from wechatpy import parse_message, create_reply
 from wechatpy.replies import TextReply, ImageReply, VoiceReply, VideoReply, MusicReply, ArticlesReply, TransferCustomerServiceReply
-from basic.models import User
+from basic.models import User, DayData
 from basic import tools as basic_tools
+from match.models import Match
+from match import tools as match_tools
 
 @csrf_exempt
 def handle(request):
@@ -27,32 +30,31 @@ def handle(request):
 #对文本信息进行回复
 def textHandle(msg):
     #生成文本回复
-    reply = TextReply(content=u"你以为发文本有用么？太天真了!", message=msg)
-    return HttpResponse(reply)
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对语音信息进行回复
 def voiceHandle(msg):    
-    return HttpResponse(create_reply("Hello World!I am voice", message=msg))
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对图片信息进行回复
 def imageHandle(msg):
-    return HttpResponse(create_reply("Hello World!I am image", message=msg))
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对视频信息进行回复
 def videoHandle(msg):
-    return HttpResponse(create_reply("Hello World!I am video", message=msg))
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对地理位置信息进行回复
 def locationHandle(msg):
-    return HttpResponse(create_reply("Hello World!I am location", message=msg))
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对链接信息进行回复
 def linkHandle(msg):
-    return HttpResponse(create_reply("Hello World!I am link", message=msg))
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对小视频信息进行回复
 def svHandle(msg):
-    return HttpResponse(create_reply("Hello World!I am short video", message=msg))
+    return HttpResponse(create_reply(tools.help_text, message=msg))
 
 #对事件信息进行处理
 def eventHandle(msg):
@@ -63,17 +65,24 @@ def subEvent(msg):
     data = tools.client.user.get(msg.source)
     try:
         username = data["nickname"]
-        try:
-            user = User.objects.get(openId=msg.source)
-        except:
-            user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source,goods=0)
+        users = User.objects.filter(openId=msg.source)
+        if len(users) > 0:
+            user = users[0]
+        else:
+            user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source)
         user.name = username
+        user.uid = int(random.random() * 100)
         if "headimgurl" in data:
             user.image = data["headimgurl"]
         user.save()
+        date = basic_tools.getDate()
+        tmp = DayData.objects.filter(user=user,date=date)
+        if len(tmp) == 0:
+            dayData = DayData(user=user,date=date)
+            dayData.save()
     except:
         username = ""
-    return HttpResponse(create_reply(u"%s!欢迎使用新中韩无敌了的手环公众号!" % username, message=msg))
+    return HttpResponse(create_reply(u"%s!欢迎使用新中韩无敌了的手环公众号!\n%s" % (username, tools.help_text), message=msg))
 
 #对用户取消关注事件
 def unsubEvent(msg):
@@ -108,33 +117,152 @@ def clickEvent(msg):
     else:
         user.image = ""
     user.save()
+    date = basic_tools.getDate()
+    datetime = basic_tools.getDateTime()
     if msg.key == "V1001_DATA_TODAY": #今日战况
-        articles = []
-        articles.append({"title":u"今日战况","description":u"你今日消耗了%d千卡" % basic_tools.today_Calories(msg.source),"image":"http://wrist.ssast2015.com/static/img/data_today.jpg","url":"http://wrist.ssast2015.com/basic/today"})
-        reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_DATA_REPORT": #健康报告
-        articles = []
-        articles.append({"title":u"健康报告","description":u"运动趋势&健康报告","image":"http://wrist.ssast2015.com/static/img/data_report.jpg","url":"http://wrist.ssast2015.com/basic/report"})
-        reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_DATA_RANK": #排行榜
-        articles = []
-        articles.append({"title":u"排行榜","description":u"你今日消耗了%d千卡" % basic_tools.today_Calories(msg.source),"image":"http://wrist.ssast2015.com/static/img/data_rank.jpg","url":"http://wrist.ssast2015.com/basic/rank"})
-        reply = ArticlesReply(articles=articles, message=msg)
+        data = DayData.objects.filter(user=user,date=date)
+        if len(data) == 0:
+            data = DayData(user=user,date=date)
+            data.save()
+        else:
+            data = data[0]
+        steps = data.steps
+        dayPlan = user.dayPlan
+        if steps < dayPlan:
+           per = steps * 100 / dayPlan
+        else:
+           per = 100
+        if per <= 25:
+           remark = u"前路漫漫，要加油噢!"
+        elif per >= 40 and per <= 60:
+           remark = u"成功的路已经走了一半，继续努力!"
+        elif per == 100:
+           remark = u"已经完成预定计划了！你真棒！"
+        elif per >= 90:
+           remark = u"就快要成功了！加油加油!"
+        else:
+           remark = ""
+        url = "%s/basic/redirect/profile?page=0" % tools.domain
+        data = {
+          "steps":{
+            "value": str(steps),
+            "color": "#ff0000",
+          },
+          "per":{
+            "value": str(per),
+            "color": "#007fff",
+          },
+          "remark":{
+            "value": remark,
+            "color": "#666666"
+          }
+        }
+        tools.customSendTemplate(msg.source, tools.template_id["data"], "#000000", data, url)
+        reply = ""
+    elif msg.key == "V1001_DATA_BIND": #绑定手环
+        url = "%s%s/basic/bind?openId=%s" % (tools.BIND_URL, tools.domain, msg.source)
+        data = {
+          "content":{
+            "value": u"请点击进入绑定",
+            "color": "#ff5656"
+          }
+        }
+        tools.customSendTemplate(msg.source, tools.template_id["msg"], "#000000", data, url) 
+        reply = ""
+    elif msg.key == "V1001_DATA_HELP": #帮助
+        reply = TextReply(content=tools.help_text, message=msg)
+    elif msg.key == "V1001_DATA_PROFILE": #个人主页
+        dayPlan = user.dayPlan
+        sleepPlan = user.sleepPlan
+        if dayPlan == 0 or sleepPlan == 0:
+            remark = u"您的计划设置不完整，请点击进入设置"
+        else:
+            remark = user.comment
+            if remark == "":
+                remark = u"点击查看个人信息"
+        url = "%s/basic/redirect/profile?page=3" % tools.domain
+        data = {
+            "dayPlan":{
+              "value": str(dayPlan),
+              "color": "#ff0000"
+            },
+            "sleepPlan":{
+              "value": str(sleepPlan),
+              "color": "#007fff"
+            },
+            "remark":{
+              "value": remark,
+              "color": "#666666"
+            }
+        }
+        tools.customSendTemplate(msg.source, tools.template_id["profile"], "#000000", data, url)
+        reply = ""
     elif msg.key == "V1001_PLAN_MAKE":
         articles = []
-        articles.append({"title":u"制定计划","description":u"快来制定你自己的运动计划吧!","image":"http://wrist.ssast2015.com/static/img/plan_make.jpg","url":"http://wrist.ssast2015.com/plan/make"})
+        articles.append({"title":u"制定计划","description":u"快来制定你自己的运动计划吧!","image":"%s/static/img/plan_make.jpg" % tools.domain,"url":"%s/plan/redirect?page=0" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_PLAN_OWN":
         articles = []
-        articles.append({"title":u"查看我的","description":u"来看看你都有什么运动计划吧","image":"http://wrist.ssast2015.com/static/img/plan_own.jpg","url":"http://wrist.ssast2015.com/plan/own"})
+        articles.append({"title":u"查看我的","description":u"来看看你都有什么运动计划吧","image":"%s/static/img/plan_own.jpg" % tools.domain,"url":"%s/plan/redirect?page=3" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_PLAN_SHARE":
+    elif msg.key == "V1001_PLAN_SQUARE":
         articles = []
-        articles.append({"title":u"计划广场","description":u"想都想不到的运动计划","image":"http://wrist.ssast2015.com/static/img/plan_share.jpg","url":"http://wrist.ssast2015.com/plan/share"})
+        articles.append({"title":u"计划广场","description":u"新鲜出炉的运动计划","image":"%s/static/img/plan_square.jpg" % tools.domain,"url":"%s/plan/redirect?page=2" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_PLAN_RANK":
         articles = []
-        articles.append({"title":u"计划排行榜","description":u"来看看都有什么诱人的运动计划吧!","image":"http://wrist.ssast2015.com/static/img/plan_rank.jpg","url":"http://wrist.ssast2015.com/plan/rank"})
+        articles.append({"title":u"计划排行榜","description":u"想知道什么计划更受欢迎么","image":"%s/static/img/plan_rank.jpg" % tools.domain,"url":"%s/plan/redirect?page=1" % tools.domain})
+        reply = ArticlesReply(articles=articles, message=msg)
+    elif msg.key == "V1001_MATCH_MAKE":
+        articles = []
+        articles.append({"title":u"创建比赛","description":u"开始一场新的比赛吧！","image":"%s/static/img/match_make.jpg" % tools.domain,"url":"%s/match/redirect?page=0" % tools.domain})
+        reply = ArticlesReply(articles=articles, message=msg)
+    elif msg.key == "V1001_MATCH_CHECK":
+        closest_match = match_tools.closest_match(date, datetime)
+        if not closest_match:
+            data = {
+                "title":{
+                    "value": u"比赛进度提醒",
+                    "color": "#000000"
+                },
+                "content":{
+                    "value": u"没有未结束的比赛",
+                    "color": "#ff0000"
+                },
+                "remark":{
+                    "value": u"来亲自发起一场比赛吧!",
+                    "color": "#666666"
+                }
+            }
+            url = "%s/match/redirect?page=0" % tools.domain
+            tools.customSendTemplate(msg.source, tools.template_id["msg"], "#000000", data, url)
+        else:
+            last_time = basic_tools.last_time(date, datetime, closest_match.endtime)
+            calories = match_tools.calories_num(closest_match, user)
+            data = {
+                "object":{
+                    "value": u"%s 比赛" %closest_match.title,
+                    "color": "#007fff"
+                },
+                "lastTime":{
+                    "value": last_time,
+                    "color": "#ff0000"
+                },
+                "calories":{
+                    "value": str(calories),
+                    "color": "#007fff"
+                },
+                "remark":{
+                    "value": u"请继续努力!",
+                    "color": "#666666"
+                }
+            }
+            url = "%s/match/redirect?page=1" % tools.domain
+            tools.customSendTemplate(msg.source, tools.template_id["progress"], "#000000", data, url)
+        reply = ""
+    elif msg.key == "V1001_MATCH_SQUARE":
+        articles = []
+        articles.append({"title":u"比赛广场","description":u"新鲜出炉的比赛","image":"%s/static/img/match_square.jpg" % tools.domain,"url":"%s/match/redirect?page=2" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     return HttpResponse(reply)
 

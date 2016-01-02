@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-import views
+from plan import views
 
 urlpatterns = [
-    url(r'^make', views.plan_make),
-    url(r'^own', views.plan_share),
-    url(r'^share', views.plan_share),
-    url(r'^rank', views.plan_rank),
+    url(r'^redirect', views.redirect_plan),
+    url(r'^data/make', views.plan_make),
+    url(r'^data/own', views.plan_own),
+    url(r'^data/square', views.plan_square),
+    url(r'^data/rank', views.plan_rank),
+    url(r'^submit/make', views.submit_make),
+    url(r'^data/follow', views.plan_follow),
 ]

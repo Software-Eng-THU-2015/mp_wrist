@@ -18,7 +18,6 @@ from django.contrib import admin
 from match import urls as match_urls
 from plan import urls as plan_urls
 from basic import urls as basic_urls
-from bongdata import urls as bongdata_urls
 from wechat import server
 
 urlpatterns = [
@@ -27,5 +26,4 @@ urlpatterns = [
     url(r'^plan/', include(plan_urls)),
     url(r'^basic/', include(basic_urls)),
     url(r'^wechat/', server.handle),
-    url(r'^bongdata/', include(bongdata_urls)),
 ]

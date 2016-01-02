@@ -18,7 +18,12 @@ from django.contrib import admin
 import views
 
 urlpatterns = [
-    url(r'^today', views.data_today),
-    url(r'^report', views.data_report),
-    url(r'^rank', views.data_rank),
+    url(r'^tmp', views.tmp),
+    url(r'^bind', views.bind),
+    url(r'^redirect/profile', views.redirect_profile),
+    url(r'^data/today', views.data_today),
+    url(r'^data/rank', views.data_rank),
+    url(r'^data/good', views.data_good),
+    url(r'^data/friend', views.data_friend),
+    url(r'^data/profile', views.data_profile),
 ]
