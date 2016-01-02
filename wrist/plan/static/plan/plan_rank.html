@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/semantic.min.css" />
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/footer.css" />
+	<title>计划排行榜</title>
+	<style type="text/css">
+	 body {
+	   background-color:#1B1C1D;
+	 }
+	</style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/base.js"></script>
+    <script src="/static/js/yepnope.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+   <script class="template" type="text/x-handlebars-template">
+   <div class="link" to={{href}} style="display: none"></div>
+   <div id="userId" userId={{userId}} style="display:none"></div>
+   <div class="data" page="1" style="display: none"></div>
+	<!-- Page container -->
+  <a class="ui top attached black label">
+	 <div class="ui large horizontal inverted statistic">
+	 <div class="text value">
+       plan ranking
+     </div>
+     </div>
+	 </a>
+	 <br></br>
+	 <br></br>
+  <div class="ui link centered cards">
+  {{#data_list}}
+  <div class="card">
+    <div class="content">
+    {{#compare num '==' 1}}
+	<div class="ui yellow ribbon label"><i class="trophy big icon"></i></div>
+	{{else}}
+        {{#compare num '==' 2}}
+            <div class="ui grey ribbon label">
+            <div class="ui horizontal inverted tiny statistic">
+            <div class="value">2</div>
+            <div class="label">nd</div>
+            </div>
+            </div>
+        {{else}}
+            {{#compare num '==' 3}}
+                <div class="ui brown ribbon label">
+                <div class="ui horizontal inverted tiny statistic">
+                <div class="value">3</div>
+                <div class="label">rd</div>
+                </div>
+                </div>
+            {{else}}
+                    <div class="ui black ribbon label">
+                    <div class="ui horizontal inverted tiny statistic">
+                    <div class="value">{{num}}</div>
+                    <div class="label">th</div>
+                    </div>
+                    </div>
+            {{/compare}}
+        {{/compare}}
+    {{/compare}}
+    <img class="ui avatar image" src={{user_image}}> {{user_name}}
+    </div>
+    <div class="image">
+      <img src={{image}}>
+    </div>
+    <div class="content">
+      <div class="header">{{title}}</div>
+      <div class="meta">
+        <a>{{description}}</a>
+      </div>
+      <div class="description">
+      {{#each tags}}
+        <div class="ui label">{{this}}</div>
+      {{/each}}
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+      {{#if isFollow}}
+        <button class="ui follow button" userId={{id}}>
+          <i class="paw icon"></i>Following 
+        </button>
+      {{else}}
+        <button class="ui follow button" userId={{id}}>
+            <i class="paw icon"></i>&nbsp&nbsp&nbsp&nbspFollow&nbsp&nbsp&nbsp
+		</button>
+      {{/if}}
+      </span>
+      <span>
+        <i class="user icon"></i>
+        {{goods}} people
+      </span>
+    </div>
+  </div>
+  {{/data_list}}
+  </div>
+  <div class="box"></div>
+    <div class="foot">
+      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+      <button><span class="typcn typcn-home"></span><br><span id="fb_my">我的</span></button>
+    </div>
+  </script>
+  <script src="/static/js/handlebars.min.js"></script>
+  <script>
+        Handlebars.registerHelper("compare", function(left, operator, right, options){
+            var operators = {
+                "==": function(l,r){return l == r;}
+            };
+            var result = operators[operator](left, right);
+            if (result)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/plan/data/rank&userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep: ["/static/plan/js/plan_rank.js", "/static/js/footer.js"]
+            });
+            }
+        });
+  </script>
+</body>
+</html>

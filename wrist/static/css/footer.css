@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+
+.foot {
+	background:#D8FCFF;
+	width:100%;
+	height:12%;
+	position:fixed;
+	bottom:0px;
+	text-align:center;
+}
+
+.foot button {
+	background-color:transparent;
+	border:0;
+	color:#949494;
+	font-family:黑体;
+	margin:5% 5%;
+    font-size: 30px
+}
+
+.typcn{
+    font-size: 70px
+}
+
+@media screen and (max-width: 400px) {
+    .foot button {
+        background-color:transparent;
+        border:0;
+        color:#949494;
+        font-family:黑体;
+        margin:3% 2%;
+        font-size: 12px
+    }
+    
+    .typcn{
+        font-size: 20px
+    }
+}

@@ -1,7 +1,7 @@
 #-*- utf-8 -*-
 
-def closest_match(date, datetime):
+def closest_match(now):
     pass
     
-def calories_num(match, user):
+def steps_sum(match):
     pass

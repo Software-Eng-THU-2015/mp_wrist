@@ -1,5 +1,6 @@
 #-*- coding=utf-8 -*-
 
+import time
 import json
 from models import User, DayData
 
@@ -12,23 +13,19 @@ bong_activity = [
   [u"手环异常"]
 ]
 
-class Object:
-   def __init__(self):
-       None
 def getDate():
-#    print "datetime:%s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
-#    tmp = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S").split(" ")[0].split("-")
-#    for i in xrange(3):
-#        tmp[i] = int(tmp[i])
-#    return tmp[0] * 10000 + tmp[1] * 100 + tmp[2]
-    data = json.loads(open("/home/chendaxixi/scripts/date_time", "r").read())
-    return int(data["date"])
+    date = time.strftime("%Y-%m-%d").split("-")
+    for i in xrange(3):
+        date[i] = int(date[i])
+    return date[0] * 10000 + date[1] * 100 + date[2]
 
 def getDateTime():
-    data = json.loads(open("/home/chendaxixi/scripts/date_time", "r").read())
-    return int(data["datetime"])
+    date = time.strftime("%H:%M:%S").split(":")
+    for i in xrange(3):
+        date[i] = int(date[i])
+    return date[0] * 10000 + date[1] * 100 + date[2]
 
-def last_time(date, datetime, endtime):
+def left_time(now, endtime):
     pass
     
 def splitDate(datetime):

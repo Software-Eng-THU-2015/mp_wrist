@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" href="/static/css/semantic.min.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/footer.css" />
+	<title>比赛广场</title>
+	<style type="text/css">
+	#rankTable {
+		position: absolute;
+		left: 0;
+		right: 0;
+		width: 100%;
+	}
+	 body {
+	   background-color:#DADADA;
+	 }
+  	</style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/base.js"></script>
+    <script src="/static/js/yepnope.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="body">
+   <script class="template" type="text/x-handlebars-template">
+   <div class="link" to={{href}} style="display: none"></div>
+   <div id="userId" userId={{userId}} style="display:none"></div>
+   <div class="data" page="2" style="display: none"></div>
+	<!-- Page container -->
+  <a class="ui top attached gray label">
+	 <div class="ui large horizontal statistic">
+	 <div class="text value">
+       mine
+     </div>
+     </div>
+	 </a>
+  <div class="ui link centered cards">
+  {{#data_list}}
+  <div class="card">
+    <div class="content">
+    <div class="right floated meta">{{createTime}}</div>
+    <img class="ui avatar image" src={{user_image}}> {{user_name}}
+    </div>
+    <div class="image">
+      <img src={{image}}>
+    </div>
+    <div class="content">
+      <div class="header">{{title}}</div>
+      <i class="calendar icon"></i>竞赛时间
+      <p>{{startTime}}-{{endTime}}</p>
+      <i class="write square icon"></i>竞赛说明
+      <p>{{description}}</p>
+      <div class="description">
+      {{#each tags}}
+        <div class="ui label">{{this}}</div>
+      {{/each}}
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+      {{#if isFollow}}
+        <button userId={{userId}} class="ui blue follow button">
+            <i class="paw icon"></i>
+            Joined
+		</button>
+      {{else}}
+        <button userId={{userId}} class="ui follow button">
+            <i class="paw icon"></i>
+            &nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp
+		</button>
+      {{/if}}
+      </span>
+      <span>
+        <i class="user icon"></i>
+        {{follow}} people
+      </span>
+    </div>
+  </div>
+  {{/data_list}}
+  </div>
+  <div class="box"></div>
+    <div class="foot">
+      <button page="0"><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button page="1"><span class="typcn typcn-th-large"></span><br><span id="fb_rank">进度</span></button>
+      <button page="2"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+    </div>
+  </script>
+  <script src="/static/js/handlebars.min.js"></script>
+  <script>
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/match/data/square?userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep: ["/static/match/js/match_square.js", "/static/js/footer.js"]
+            });
+            }
+        });
+  </script>
+  </div>
+  <script class="template" >
+  </script>
+</body>
+</html>

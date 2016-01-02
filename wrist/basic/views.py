@@ -4,6 +4,7 @@ import random
 import json
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse
 from wechat import tools as wechat_tools
 from models import User, DayData, Data, Good
@@ -40,8 +41,11 @@ def redirect_profile(request):
         return HttpResponseRedirect("/static/404.html")
 
 def bind(request):
-    request.session["userId"] = request.GET["openId"]
-    return HttpResponseRedirect("/basic/profile?page=3")
+    if request.method == "POST":
+        return HttpResponseRedirect("/basic/profile?page=3")
+    else:
+        request.session["userId"] = request.GET["openId"]
+        return HttpResponseRedirect("/static/basic/data_bind.html")
 
 def data_rank(request):
     if not "userId" in request.session:
@@ -158,9 +162,6 @@ def data_friend(request):
         data["data_list"].append(item)
 #    except:
     return HttpResponse(json.dumps(data), content_type="application/json")
-    
-def data_report(request):
-    return render_to_response("basic/data_rank_.html", context_instance=RequestContext(request))
 
 def data_good(request):
 #    try:
@@ -189,4 +190,12 @@ def data_good(request):
 #        return HttpResponse("error")
 
 def data_profile(request):
-    pass
+    data = {}
+    data["userId"] = userId = request.GET["userId"]
+    data["href"] = "%s/basic/redirect/profile" % wechat_tools.domain
+    user = User.objects.get(openId=userId)
+    data["image"] = user.image
+    data["name"] = user.name
+    data["level"] = user.level
+    data["archives"] = [u"阿萨德",u"as1"]
+    return HttpResponse(json.dumps(data), content_type="application/json")

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/semantic.min.css" />
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/footer.css" />
+	<title>计划广场</title>
+	<style type="text/css">
+	#rankTable {
+		position: absolute;
+		left: 0;
+		right: 0;
+		width: 100%;
+	}
+	</style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/base.js"></script>
+    <script src="/static/js/yepnope.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <script class="template" type="text/x-handlebars-template">
+    <div class="link" to={{href}} style="display: none"></div>
+    <div id="userId" userId={{userId}} style="display:none"></div>
+    <div class="data" page="2" style="display: none"></div>
+	<!-- Page container -->
+	<a class="ui top attached rad label">
+	 <div class="ui large horizontal statistic">
+	 <div class="text value">
+       plan
+     </div>
+     </div>
+	 </a>
+
+  <div class="ui divided items">
+  {{#data_list}}
+    <div class="ui segment">
+      <div class="ui large feed">
+      <div class="event">
+        <img src={{user_image}} class="ui avatar image">
+      <div class="content">
+        <div class="summary">
+          <a class="user">
+              {{user_name}}
+            </a>
+          <div class="date">
+            {{createTime}}
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <h3 class="ui header">
+      {{title}}
+    </h3>
+    <div class="ui small images">
+      <img src={{image}}>
+    </div>
+    <div class="extra text">
+      {{description}}
+    </div>
+    <p></p>
+    <div class="extra">
+    {{#each tags}}
+      <div class="ui label">{{this}}</div>
+    {{/each}}
+    </p>
+    <div class="ui two bottom attached buttons">
+    {{#if isGood}}
+    <div class="red ui like button" userId={{id}}>
+    {{else}}
+    <div class="ui like button" userId={{id}}>
+    {{/if}}
+      <i class="heart icon"></i>
+      Like
+    </div>
+    {{#if isFollow}}
+    <div class="ui blue follow button" userId={{id}}>
+      <i class="paw icon"></i>Following
+    </div>
+    {{else}}
+    <div class="ui follow button" userId={{id}}>
+    <i class="paw icon"></i>Follow
+    </div>
+    {{/if}}
+    </div>
+  </div>
+  </div>
+  {{/data_list}}
+  </div>
+  <div class="box"></div>
+    <div class="foot">
+      <button page="0"><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button page="1"><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+      <button page="2"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+      <button page="3"><span class="typcn typcn-home"></span><br><span id="fb_my">我的</span></button>
+    </div>
+  </script>
+  <script src="/static/js/handlebars.min.js"></script>
+  <script>
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain +  "/plan/data/square?userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep: ["/static/plan/js/plan_square.js", "/static/js/footer.js"]
+            });
+            }
+        });
+  </script>
+</body>
+</html>

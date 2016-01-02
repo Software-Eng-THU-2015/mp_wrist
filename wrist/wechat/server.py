@@ -1,4 +1,3 @@
-
 #-*- coding=utf-8 -*-
 ###
 # description: 微信公众号被动回复服务
@@ -9,13 +8,13 @@ __author__ = "chendaxixi"
 import random
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from wechat import tools
 from wechatpy import parse_message, create_reply
 from wechatpy.replies import TextReply, ImageReply, VoiceReply, VideoReply, MusicReply, ArticlesReply, TransferCustomerServiceReply
 from basic.models import User, DayData
 from basic import tools as basic_tools
 from match.models import Match
 from match import tools as match_tools
+from wechat import tools
 
 @csrf_exempt
 def handle(request):
@@ -76,6 +75,7 @@ def subEvent(msg):
             user.image = data["headimgurl"]
         user.save()
         date = basic_tools.getDate()
+        #如果DayData不存在，则创建
         tmp = DayData.objects.filter(user=user,date=date)
         if len(tmp) == 0:
             dayData = DayData(user=user,date=date)
@@ -111,6 +111,7 @@ def clickEvent(msg):
     user = User.objects.get(openId=msg.source)
     id = user.id
     data = tools.client.user.get(msg.source)
+    #更新用户姓名、头像
     user.name = data["nickname"]
     if "headimgurl" in data:
         user.image = data["headimgurl"]
@@ -119,6 +120,7 @@ def clickEvent(msg):
     user.save()
     date = basic_tools.getDate()
     datetime = basic_tools.getDateTime()
+    now = basic_tools.getNow()
     if msg.key == "V1001_DATA_TODAY": #今日战况
         data = DayData.objects.filter(user=user,date=date)
         if len(data) == 0:
@@ -160,7 +162,7 @@ def clickEvent(msg):
         tools.customSendTemplate(msg.source, tools.template_id["data"], "#000000", data, url)
         reply = ""
     elif msg.key == "V1001_DATA_BIND": #绑定手环
-        url = "%s%s/basic/bind?openId=%s" % (tools.BIND_URL, tools.domain, msg.source)
+        url = "%s/basic/redirect/bind?openId=%s" % (tools.domain, msg.source)
         data = {
           "content":{
             "value": u"请点击进入绑定",
@@ -197,29 +199,29 @@ def clickEvent(msg):
         }
         tools.customSendTemplate(msg.source, tools.template_id["profile"], "#000000", data, url)
         reply = ""
-    elif msg.key == "V1001_PLAN_MAKE":
+    elif msg.key == "V1001_PLAN_MAKE":  #制定计划
         articles = []
         articles.append({"title":u"制定计划","description":u"快来制定你自己的运动计划吧!","image":"%s/static/img/plan_make.jpg" % tools.domain,"url":"%s/plan/redirect?page=0" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_PLAN_OWN":
+    elif msg.key == "V1001_PLAN_OWN":   #我的计划
         articles = []
         articles.append({"title":u"查看我的","description":u"来看看你都有什么运动计划吧","image":"%s/static/img/plan_own.jpg" % tools.domain,"url":"%s/plan/redirect?page=3" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_PLAN_SQUARE":
+    elif msg.key == "V1001_PLAN_SQUARE":    #计划广场
         articles = []
         articles.append({"title":u"计划广场","description":u"新鲜出炉的运动计划","image":"%s/static/img/plan_square.jpg" % tools.domain,"url":"%s/plan/redirect?page=2" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_PLAN_RANK":
+    elif msg.key == "V1001_PLAN_RANK":  #计划排行榜
         articles = []
         articles.append({"title":u"计划排行榜","description":u"想知道什么计划更受欢迎么","image":"%s/static/img/plan_rank.jpg" % tools.domain,"url":"%s/plan/redirect?page=1" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_MATCH_MAKE":
+    elif msg.key == "V1001_MATCH_MAKE": #创建比赛
         articles = []
         articles.append({"title":u"创建比赛","description":u"开始一场新的比赛吧！","image":"%s/static/img/match_make.jpg" % tools.domain,"url":"%s/match/redirect?page=0" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
-    elif msg.key == "V1001_MATCH_CHECK":
-        closest_match = match_tools.closest_match(date, datetime)
-        if not closest_match:
+    elif msg.key == "V1001_MATCH_CHECK":    #我的比赛进度查看
+        closest_match = match_tools.closest_match(now)
+        if not closest_match:   #没有未结束的比赛
             data = {
                 "title":{
                     "value": u"比赛进度提醒",
@@ -236,20 +238,20 @@ def clickEvent(msg):
             }
             url = "%s/match/redirect?page=0" % tools.domain
             tools.customSendTemplate(msg.source, tools.template_id["msg"], "#000000", data, url)
-        else:
-            last_time = basic_tools.last_time(date, datetime, closest_match.endtime)
-            calories = match_tools.calories_num(closest_match, user)
+        else:   #返回最近的比赛的进度
+            left_time = basic_tools.left_time(now, closest_match.endtime)
+            steps = match_tools.steps_sum(closest_match)
             data = {
                 "object":{
-                    "value": u"%s 比赛" %closest_match.title,
+                    "value": u"%s 比赛" % closest_match.title,
                     "color": "#007fff"
                 },
                 "lastTime":{
-                    "value": last_time,
+                    "value": left_time,
                     "color": "#ff0000"
                 },
-                "calories":{
-                    "value": str(calories),
+                "steps":{
+                    "value": str(steps),
                     "color": "#007fff"
                 },
                 "remark":{
@@ -260,7 +262,7 @@ def clickEvent(msg):
             url = "%s/match/redirect?page=1" % tools.domain
             tools.customSendTemplate(msg.source, tools.template_id["progress"], "#000000", data, url)
         reply = ""
-    elif msg.key == "V1001_MATCH_SQUARE":
+    elif msg.key == "V1001_MATCH_SQUARE": #比赛广场
         articles = []
         articles.append({"title":u"比赛广场","description":u"新鲜出炉的比赛","image":"%s/static/img/match_square.jpg" % tools.domain,"url":"%s/match/redirect?page=2" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)

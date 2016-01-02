@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/footer.css" />
+	<title>当日排行榜</title>
+	<style type="text/css">
+    body {
+        background: #333333;
+    }
+
+    #rankTable {
+		position: absolute;
+		left: 5%;
+		right: 5%;
+		width: 90%;
+	}
+	</style>
+    <script src="/static/js/base.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/yepnope.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+</head>
+
+<body>
+		<!-- Page header -->
+        <script class="template" type="text/x-handlebars-template">
+        <div class="link" to={{href}} style="display: none"></div>
+        <div id="userId" userId={{userId}} style="display: none"></div>
+        <div class="data" page="1" style="display: none"></div>
+		<h1 class="ui center aligned inverted header">当日排行榜</h1>
+		<!-- Rank Table --> 
+		<table id = "rankTable" class="ui cell inverted table unstackable">
+            <thead>
+              <tr>
+                <th>排名</th>
+                <th>名称</th>
+                <th>步数</th>
+                <th>喜欢</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#data_list}}
+              <!-- One Element -->
+              {{#compare identity '==' 0}}
+                <tr bgcolor=red>
+              {{else}}
+                {{#compare identity '==' 1}}
+                    <tr bgcolor=green>
+                {{else}}   
+                    <tr>
+                {{/compare}}
+              {{/compare}}
+                <td>
+                {{#compare num '==' 1}}
+                    <div class="ui yellow ribbon label">1st</div>
+                {{else}}
+                    {{#compare num '==' 2}}
+                        <div class="ui grey ribbon label">2nd</div>
+                    {{else}}
+                        {{#compare num '==' 3}}
+                            <div class="ui brown ribbon label">3rd</div>
+                        {{else}}
+                            {{num}}
+                        {{/compare}}
+                    {{/compare}}
+                {{/compare}}
+                </td>
+                <td>
+                    <img src = {{image}} class="ui avatar image">{{username}}
+                </td>
+                <td>
+                     <span id="step{{num}}">{{steps}}</span>
+                     <div id = "user{{num}}" class="ui indicating  progress">
+                        <div class="bar">
+                            <div class="progress"></div>  <!-- Show percentage -->
+                        </div>
+                     </div>
+                </td>
+                <td>
+                {{#if isGood}}
+                    <i userId={{userId}} class="red heart icon"></i>{{goods}}     
+                {{else}}
+                    <i userId={{userId}} class="red empty heart icon"></i>{{goods}}
+                {{/if}}
+                </td>
+              </tr>
+              <!-- End of One Elemet -->
+              {{/data_list}}
+            </tbody>
+        </table>
+        <div class="box"></div>
+        <div class="foot">
+          <button page="0"><span class="typcn typcn-star"></span><br><span id="fb_today">战况</span></button>
+          <button page="1"><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+          <button page="2"><span class="typcn typcn-user"></span><br><span id="fb_friend">好友</span></button>
+          <button page="3"><span class="typcn typcn-home"></span><br><span id="fb_home">主页</span></button>
+        </div>
+        </script>
+    <script type="text/javascript" src="/static/js/handlebars.min.js"></script>
+    <script>
+        Handlebars.registerHelper("compare", function(left, operator, right, options){
+            var operators = {
+                "==": function(l,r){return l == r;}
+            };
+            var result = operators[operator](left, right);
+            if (result)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/basic/data/rank?userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep:[
+                    '/static/basic/js/data_rank.js',
+                    '/static/js/footer.js'
+                ],
+            });
+            }
+        });
+    </script>
+  
+</body>
+</html>

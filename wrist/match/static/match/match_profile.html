@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/semantic.min.css" />
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/fonter.css" />
+	<title>比赛说明</title>
+	<style type="text/css">
+	 body {
+	   background-color:#DADADA;
+	 }
+	</style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/base.js"></script>
+</head>
+
+<body>
+   <script class="template" type="text/x-handlebars-template">
+   <div class="link" to={{href}} style="display: none"></div>
+   <div id="userId" userId={{userId}} style="display:none"></div>
+   <div class="data" page="2" style="display: none"></div>
+	<!-- Page container -->
+  <a class="ui top attached gray label">
+	 <div class="ui large horizontal statistic">
+	 <div class="text value">
+       competiton
+     </div>
+     </div>
+	 </a>
+  <div class="ui link centered cards">
+  <div class="card">
+    <div class="content">
+    <div class="right floated meta">{{createTime}}</div>
+    <img class="ui avatar image" src={{user_image}}> {{user_name}}
+    </div>
+    <div class="image">
+      <img src={{image}}>
+    </div>
+    <div class="content">
+      <div class="header">{{title}}</div>
+      <i class="calendar icon"></i>竞赛时间
+      <p>{{startTime}}-{{endTime}}</p>
+      <i class="write square icon"></i>竞赛说明
+      <p>{{description}}</p>
+      <div class="description">
+      {{#each tags}}
+        <div class="ui label">{{this}}</div>
+      {{/each}}
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+      {{#if isFollow}}
+        <button class="ui blue follow button">
+            <i class="paw icon"></i>
+            Joined
+		</button>
+      {{else}}
+        <button class="ui follow button">
+            <i class="paw icon"></i>
+            &nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp
+		</button>
+      {{/if}}
+      </span>
+      <span>
+        <i class="user icon"></i>
+        {{follow}} people
+      </span>
+    </div>
+  </div>
+  </div>
+    <div class="join-group" style="display: none">
+    </div>
+    <div class="foot">
+      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button><span class="typcn typcn-th-large"></span><br><span id="fb_rank">进度</span></button>
+      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+    </div>
+  <script src="/static/js/semantic.min.js"></script>
+  <script src="/static/match/js/match_square.js" ></script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/footer.js"></script>
+  </script>
+  <script class="template" type="x-handlebars-template">
+  <p>请选择一个队伍加入，如不选择则认为是自己建立队伍参赛</p>
+  <ul class="list-group">
+    {{#data_list}}
+        <li class="list-group-item list-group-item-text"><span class="badge">{{num}}</span>{{name}}</li>
+        <li class="group-info">
+          <div class="row">
+          {{#members}}
+            <div class="col-xs-4">
+              <div class="thumbnail"><img src={{image}} alt="Thumbnail Image 1">
+                <div class="caption" teamId={{teamId}}>
+                  <h3>{{name}}</h3>
+                </div>
+              </div>
+            </div>
+          {{/members}}
+          </div>
+        </li>
+    {{/data_list}}
+    <button id="join">加入</button>
+    <button id="cancel">取消</button>
+  </ul>
+  </script>
+  <script src="/static/js/handlebars.min.js"></script>
+  <script>
+        var tpl = $(".template")[0].html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/data/match/square";
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            $("body").html(template(json));
+        });
+  </script>
+</body>
+</html>

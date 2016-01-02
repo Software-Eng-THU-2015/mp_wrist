@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+	<title>创建比赛</title>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="/static/css/flat-ui.min.css" />
+	<link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="/static/css/fileinput.min.css" />
+	<link rel="stylesheet" href="/static/match/css/match_make.css" />
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/footer.css" />
+    <script type="text/javascript" src="/static/js/base.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/yepnope.min.js"></script>
+    <script type="text/javascript" src="/static/js/semantic.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript" src="/static/js/fileinput.min.js"></script>
+    <script type="text/javascript" src="/static/js/fileinput_locale_zh.js"></script>
+    <style>
+        .fui-plus-circle {
+            font-size: 1.5rem;
+        }
+        
+        #friends li {
+            font-family: "楷体";
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <script class="template" type="text/x-handlebars-template">
+    <div class="link" to={{href}} style="display: none"></div>
+    <div id="userId" userId={{userId}} style="display: none"></div>
+    <div class="data" page="0" style="display: none"></div>
+    <div class="container">
+        <div class="center">
+            <div class="row-narrow white-box-shadow">
+                <div class="row-narrow-center">
+				<form method="POST" action="/match/submit/make" enctype="multipart/form-data">
+					<fieldset>
+                    	<legend id="location_flag">创建比赛</legend>
+                        <input type="text" value={{userId}} name="userId" style="display: none">
+                    	<div class="form-group" id="name">
+					    	<label>比赛名称：</label>
+					    	<input type="text" value="" class="form-control" name="match_name">
+					    </div>
+                        <div class="form-group" id="begintime">
+                            <label>开始时间:</label>
+                            <div class="input-append date form_datetime">
+                                <input class="pick-date" size="32" type="text" value="" name="begintime" readonly>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group" id="endtime">
+                            <label>结束时间:</label>
+                            <div class="input-append date form_datetime">
+                                <input class="pick-date" size="32" type="text" value="" name="endtime" readonly>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group" id="tags">
+                                <label>比赛标签：</label>
+                                <input type="text" value="" placeholder="(可选)" class="form-control" name="tags">
+                                <span id="tag_add" class="fui-plus-circle"></span> 
+                                <div class="btn-group">
+                                    <ul role="menu" class="dropdown-menu">
+                                    {{#each tags}}
+                                        <li><a>{{this}}</a></li>
+                                    {{/each}}
+                                    </ul>
+                                </div>
+                        </div>
+                        <div class="form-group" id="friends">
+                                <label>邀请队友：</label>
+                                <input type="text" value="" placeholder="(可选)" class="form-control" name="friends">
+                                <span id="friend_add" class="fui-plus-circle"></span> 
+                                <div class="btn-group">
+                                    <ul role="menu" class="dropdown-menu">
+                                    {{#each friends}}
+                                        <li><img src={{image}} class="ui avatar image">{{name}}</li>
+                                    {{/each}}
+                                    </ul>
+                                </div>
+                        </div>
+                        <div class="form-group" id="opponents">
+                                <label>邀请对手：</label>
+                                <input type="text" value="" placeholder="(可选)" class="form-control" name="opponents">
+                                <span id="opponent_add" class="fui-plus-circle"></span> 
+                                <div class="btn-group">
+                                    <ul role="menu" class="dropdown-menu">
+                                    {{#each opponents}}
+                                        <li><img src={{image}} class="ui avatar image">{{name}}</li>
+                                    {{/each}}
+                                    </ul>
+                                </div>
+                        </div>
+                        <div class="form-group" id="comment">
+                            <label for="comment">比赛描述：</label>
+                            <textarea class="form-control" rows="5" name="comment"></textarea>
+                        </div>
+                        <div class="form-group" id="image">
+                            <label>添加图片</label>
+                            <input id="input_image" type="file" class="file" name="image">
+                        </div>
+                        <div class="form-group center">
+                            <input type="submit" value="确认创建" class="submit-button"/>
+                        </div>
+					</fieldset>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box"></div>
+    <div class="foot">
+      <button page="0"><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button page="1"><span class="typcn typcn-th-large"></span><br><span id="fb_rank">进度</span></button>
+      <button page="2"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+    </div>
+    </script>
+    <script type="text/javascript" src="/static/js/handlebars.min.js"></script>
+    <script>
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/match/data/make?userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep:["/static/js/footer.js", "/static/match/js/match_make.js"]
+            });
+            }
+        });
+    </script>
+</body>
+</html>

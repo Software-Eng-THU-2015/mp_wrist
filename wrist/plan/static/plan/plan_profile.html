@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/semantic.min.css" />
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/fonter.css" />
+	<title>计划介绍</title>
+	<style type="text/css">
+	body {
+        background-color:#1B1C1D
+    }
+	</style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/base.js"></script>
+</head>
+
+<body>
+    <script class="template" type="text/x-handlebars-template">
+    <div class="link" to={{href}} style="display: none"></div>
+    <div id="userId" userId={{userId}} style="display:none"></div>
+    <div class="data" page="2" style="display: none"></div>
+	<!-- Page container -->
+ <div class="ui link centered cards">
+  <div class="card">
+    <div class="content">
+    <img class="ui avatar image" src={{user_image}}> {{user_name}}
+    </div>
+    <div class="image">
+      <img src={{image}}>
+    </div>
+    <div class="content">
+      <div class="header">{{title}}</div>
+      <div class="meta">
+        <a>{{description}}</a>
+      </div>
+      <div class="description">
+      {{#each tags}}
+        <div class="ui label">{{this}}</div>
+      {{/each}}
+      </div>
+    </div>
+    <div class="ui two bottom attached buttons">
+        {{#if isGood}}
+        <div class="red ui like button" userId={{id}}>
+        {{else}}
+        <div class="ui like button" userId={{id}}>
+        {{/if}}
+          <i class="heart icon"></i>
+          Like
+        </div>
+        {{#if isFollow}}
+        <div class="ui blue follow button" userId={{id}}>
+          <i class="paw icon"></i>Following
+        </div>
+        {{else}}
+        <div class="ui follow button" userId={{id}}>
+        <i class="paw icon"></i>Follow
+        </div>
+        {{/if}}
+        </div>
+    </div>
+  </div>
+  </div>
+    <div class="foot">
+      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+      <button><span class="typcn typcn-home"></span><br><span id="fb_my">我的</span></button>
+    </div>
+  <script src="/static/js/semantic.min.js"></script>
+  <script src="/static/plan/js/plan_profile.js" ></script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/footer.js"></script>
+  </script>
+  <script src="/static/js/handlebars.min.js"></script>
+  <script>
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/data/plan/square";
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            $("body").html(template(json));
+        });
+  </script>
+</body>
+</html>

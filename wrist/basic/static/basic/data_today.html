@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" charset="utf-8"/>
+<title>今日数据</title>
+<link rel="stylesheet" href="/static/basic/css/today_circle.css" />
+<link rel="stylesheet" href="/static/basic/css/today_timeline.css" />
+<link rel="stylesheet" href="/static/css/typicons.min.css" />
+<link rel="stylesheet" href="/static/css/footer.css" />
+<script type="text/javascript" src="/static/js/base.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/yepnope.min.js"></script>
+<script type="text/javascript" src="/static/basic/js/prefixfree.min.js"></script>
+</head>
+
+<body>
+    <script class="template" type="text/x-handlebars-template">
+    <div class="link" to={{href}} style="display: none"></div>
+    <div id="userId" userId={{userId}} css="display: none"></div>
+    <div class="data" page="0" style="display: none"></div>
+	<div class="circle">
+    	<div class="pie_left"><div class="left"></div></div>
+    	<div class="pie_right"><div class="right"></div></div>
+    	<div class="mask">
+        	<div class="cstep"><span id="step_now">{{steps_now}}</span>步</div>
+       	    <div class="pstep">计划<span id="step_plan">{{steps_plan}}</span>步</div>
+       	    <div class="per">已完成<span id="per_plan">{{steps_per}}</span>%</div>
+        </div>
+        <div class="sleepmask">
+        	<div class="csleep"><span id="sleep_now_h">{{sleep_now_h}}</span>时<span id="sleep_now_m">{{sleep_now_m}}</span>分</div>
+       	    <div class="psleep">计划<span id="sleep_plan">{{sleep_plan}}</span>小时</div>
+       	    <div class="persleep">已完成<span id="persleep_plan">{{sleep_per}}</span>%</div>
+        </div>
+	</div>
+    <div class="top"></div>
+    <div class="nav"><button id="step">消耗</button><button id="sleep">睡眠</button></div>
+    <ul class="timeline">
+    {{#data_list}}
+        <li>
+             <div class="date">{{date}}</div>
+             <div class="time">{{time}}</div>
+             <div class="round"></div>
+             <div class="content"><pre>
+             {{content}}
+             </pre></div>
+        </li>
+    {{/data_list}}
+    </ul>
+    <div class="box"></div>
+    <div class="foot">
+      <button page="0"><span class="typcn typcn-star"></span><br><span id="fb_today">战况</span></button>
+      <button page="1"><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+      <button page="2"><span class="typcn typcn-user"></span><br><span id="fb_friend">好友</span></button>
+      <button page="3"><span class="typcn typcn-home"></span><br><span id="fb_home">主页</span></button>
+    </div>
+    </script>
+    <script type="text/javascript" src="/static/js/handlebars.min.js"></script>
+    <script>
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/basic/data/today?userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test:true,
+                yep:[
+                '/static/basic/js/today_progressbar.js',
+                '/static/basic/js/today_timeline.js',
+                '/static/js/footer.js']
+            });
+            }
+        });
+    </script>
+</body>
+</html>

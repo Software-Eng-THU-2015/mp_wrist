@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css">
+    <link rel="stylesheet" href="/static/css/typicons.min.css" />
+    <link rel="stylesheet" href="/static/css/footer.css" />
+	<title>我的好友</title>
+	<style type="text/css">
+    body {
+        background: #333333;
+    }
+
+    .userLink {
+        background-color: white;
+        color: black;
+        font-family: "楷体";
+        font-size: 1.5rem;
+    }
+    
+    .line {
+        height: 1px;
+        width: 100%;
+        background: #999999;
+        overflow: hidden;
+    }
+	</style>
+    <script src="/static/js/base.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/yepnope.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
+</head>
+
+<body>
+		<!-- Page header -->
+        <script class="template" type="text/x-handlebars-template">
+        <div class="link" to={{href}} style="display: none"></div>
+        <div id="userId" userId={{userId}} style="display: none"></div>
+        <div class="data" page="2" style="display: none"></div>
+		<h1 class="ui center aligned inverted header">我的好友</h1>
+        <div class="ui">
+          {{#data_list}}
+            <div class="userLink" userId={{userId}}>
+                <img src={{image}} class="ui avatar image">{{name}}
+                <div class="line"></div>
+            </div>
+          {{/data_list}}
+        </div>
+        <div class="box"></div>
+        <div class="foot">
+          <button page="0"><span class="typcn typcn-star"></span><br><span id="fb_today">战况</span></button>
+          <button page="1"><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+          <button page="2"><span class="typcn typcn-user"></span><br><span id="fb_friend">好友</span></button>
+          <button page="3"><span class="typcn typcn-home"></span><br><span id="fb_home">主页</span></button>
+        </div>
+        </script>
+    <script type="text/javascript" src="/static/js/handlebars.min.js"></script>
+    <script>
+        Handlebars.registerHelper("compare", function(left, operator, right, options){
+            var operators = {
+                "==": function(l,r){return l == r;}
+            };
+            var result = operators[operator](left, right);
+            if (result)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        var href = window.location.href;
+        var userId = href.substr(href.indexOf('?')+1);
+        var tpl = $(".template").html();
+        var template = Handlebars.compile(tpl);
+        var url = domain + "/basic/data/friend?userId=" + userId;
+        getData(url, function(data){
+            var json = eval("(" + data + ")");
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $("body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep:[
+                    '/static/basic/js/data_friend.js',
+                    '/static/js/footer.js'
+                ],
+            });
+            }
+        });
+    </script>
+  
+</body>
+</html>
