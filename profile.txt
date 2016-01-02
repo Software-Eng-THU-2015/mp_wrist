@@ -1,0 +1,12 @@
+export WRIST_HOME=/home/softeng3/wrist;
+export DB_NAME=softeng3;
+export DB_HOST=localhost;
+export DB_USER=softeng;
+export DB_PASS=thssse;
+export DB_PORT=3306;
+export SECRET_KEY="yah7j+$1uzy_2a147%y!mk%0e4qx!v_23%^b1u4srqm1u+l2as";
+export APP_ID=wx87b3855d89436d96;
+export APP_SECRET=4d68e68b7f53bc0c78752605b0dab364;
+export TOKEN=chendaxixi;
+export BIND_URL="http://open-test.bong.cn/oauth/authorize?client_id=1419735044202&response_type=code&redirect_uri=";
+export SITE_DOMAIN=softeng3.zjzs.levy.at;

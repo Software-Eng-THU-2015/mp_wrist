@@ -5,6 +5,7 @@
 
 __author__ = "chendaxixi"
 
+import os
 import hashlib
 import httplib
 import requests
@@ -14,25 +15,25 @@ import json
 from wechatpy.utils import to_text, to_binary
 from wechatpy.client import WeChatClient
 
-APP_ID = "wx87b3855d89436d96"
-APP_SECRET = "4d68e68b7f53bc0c78752605b0dab364"
-TOKEN = "chendaxixi"
+APP_ID = os.environ.get("APP_ID")
+APP_SECRET = os.environ.get("APP_SECRET")
+TOKEN = os.environ.get("TOKEN")
 client = WeChatClient(APP_ID, APP_SECRET)
 DEVICE_BASE_URL = 'https://api.weixin.qq.com/device/'
 MEDIA_BASE_URL = "https://api.weixin.qq.com/cgi-bin/media/"
-BIND_URL = "http://open-test.bong.cn/oauth/authorize?client_id=1419735044202&response_type=code&redirect_uri="
+BIND_URL = os.environ.get("BIND_URL")
 tmp_media_id = None
 help_text = u"使用前请先绑定手环!\n本手环具有以下功能:\n\t1. 设置运动目标、查看每日排行榜\n\t2. 创建你的运动计划，开始有规划得运动吧!\n\t3. 开启一场新的比赛，勇与好友争高下\n\t4. 全新的等级、成就系统，更多未知的惊喜"
-domain = "http://wrist.ssast2015.com"
+domain = os.environ.get("SITE_DOMAIN")
 calories_rate = 0.2389
 template_id = {
-  "msg": "Ol_wljfNXMY3mrjJ0bQZbtPkouEYmVwm3y_jnO7MIMY",
-  "data": "NY4KtzC5bkgYgSs3NwXoAnj_BsmYQADw7ek77OyTE84",
-  "progress": "XlK9vG6qz4zxE85BeZXGYh-7rk42I52nTnFvttsR_5o",
-  "levelUp": "57NOCPbd1ql3oyoNP8zfj1t5w1J55JMTAJTzwgw9K4w",
-  "archive": "RUMc13Gq8LEbfoIgSm30OM6zw_zhVbLm9NY22z-e8Ng",
-  "recommand": "tKQc7bBlaQwGaJ_1zrFsZEzWYHdQvvRe8eM_kUpfdvc",
-  "profile": "EL8BwZmeB0IIAXfwrpai-3FT0GMiEaYEw7MNpt-PDsc",
+  "msg": os.environ.get("TMP_ID_MSG"),
+  "data": os.environ.get("TMP_ID_DATA"),
+  "progress": os.environ.get("TMP_ID_PROGRESS"),
+  "levelUp": os.environ.get("TMP_ID_LEVELUP"),
+  "archive": os.environ.get("TMP_ID_ARCHIVE"),
+  "recommand": os.environ.get("TMP_ID_RECOMMAND"),
+  "profile": os.environ.get("TMP_ID_PROFILE"),
 }
 
 #校验签名是否正确
