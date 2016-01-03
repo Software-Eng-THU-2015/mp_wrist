@@ -55,13 +55,12 @@ function monthMinus(months){
     return yy+ "-" + mm;
 }
 
-var chart_data = evel("(" + $(".chartData").html() + ")");
 //Day,Week,Month Datasets {"date": "", "object": "", "value": ""}
-var chartDayData = chart_data.day;
+var chartDayData = eval("(" + $(".chartData.day").html() + ")");
 
-var chartWeekData = chart_data.week;
+var chartWeekData = eval("(" + $(".chartData.week").html() + ")");
 
-var chartMonthData = chart_data.month;
+var chartMonthData = eval("(" + $(".chartData.month").html() + ")");
 
 //Steps
 var StepDayData = [];
