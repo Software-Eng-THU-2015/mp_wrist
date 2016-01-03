@@ -5,3 +5,6 @@ def closest_match(now):
     
 def steps_sum(match):
     pass
+    
+def getAllMatch(user):
+    return []

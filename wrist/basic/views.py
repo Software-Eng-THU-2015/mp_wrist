@@ -444,7 +444,7 @@ def data_profile(request):
             ]
     if not flag:
         data["plans"] = []
-        plans = user.user_plan_members
+        plans = user.user_plan_members.all()
         for plan in plans:
             item = {}
             item["name"] = plan.name
