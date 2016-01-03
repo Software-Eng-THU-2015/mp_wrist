@@ -2,8 +2,6 @@
 
 import random
 import json
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse
 from wechat import tools as wechat_tools
@@ -14,7 +12,7 @@ import tools
 
 # Create your views here.
 
-def tmp(request):
+def get_session(request):
     userId = request.session["userId"] = "ose6Ut8Ir-41wB7gQx89BifYa49Q"
     return HttpResponse(userId)
 

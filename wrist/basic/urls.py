@@ -18,7 +18,7 @@ from django.contrib import admin
 import views
 
 urlpatterns = [
-    url(r'^tmp', views.tmp),
+    url(r'^get_session', views.get_session),
     url(r'^bind', views.bind),
     url(r'^redirect/profile', views.redirect_profile),
     url(r'^data/today', views.data_today),

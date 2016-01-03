@@ -14,8 +14,8 @@ class User(models.Model):
     uid = models.CharField(max_length=100, default="")
     dayPlan = models.IntegerField(default=0)
     sleepPlan = models.IntegerField(default=0)
-    comment = models.TextField(default="")
-    friends = models.ManyToManyField('self', related_name='user_user_friends')
+    comment = models.TextField(default="", blank=True)
+    friends = models.ManyToManyField('self', related_name='user_user_friends', blank=True)
      
     def __unicode__(self):
         return self.name
@@ -24,7 +24,6 @@ class Team(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name="user_team_members")
     type = models.IntegerField(default=0)
-    goods = models.IntegerField(default=0)  
 
     def __unicode__(self):
         return self.name
