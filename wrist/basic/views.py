@@ -215,7 +215,8 @@ def data_profile(request):
     {"period":[{"type_text":u"日距离","nav_distance":True,"type":"Days"},{"type_text":u"周距离","nav_distance":True,"type":"Weeks"},{"type_text":u"月距离","nav_distance":True,"type":"Months"}],"type":"Dis","num":3},
     {"period":[{"type_text":u"日睡眠","nav_sleep":True,"type":"Days"},{"type_text":u"周睡眠","nav_sleep":True,"type":"Weeks"},{"type_text":u"月睡眠","nav_sleep":True,"type":"Months"}],"type":"Sleep","num":4},
     ]
-    data["chart_data_day"] = [
+    data["chart_data"] = []
+    data["chart_data"]["day"] = [
                 {
                     "date": "2015-11-29",
                     "step_object": 300,
@@ -316,7 +317,7 @@ def data_profile(request):
                     "cal_value": 1760
                 }
             ]
-    data["chart_data_week"] = [
+    data["chart_data"]["week"] = [
                 {
                     "date": "2015-11-12",
                     "step_object": 1320,
@@ -382,7 +383,7 @@ def data_profile(request):
                     "cal_value": 17231
                 }
             ]
-    data["chart_data_month"] = [
+    data["chart_data"]["month"] = [
                 {
                     "date":"2015-06",
                     "step_object":12346,
@@ -441,6 +442,7 @@ def data_profile(request):
                     "cal_value":14612
                 }
             ]
+    data["chart_data"] = json.dumps(data["chart_data"])
     if not flag:
         data["plans"] = []
         plans = user.user_plan_members.all()
