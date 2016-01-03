@@ -225,7 +225,7 @@ def data_profile(request):
     for i in xrange(7):
         item = DayData.objects.filter(user=user,date=date)
         if len(item) == 0:
-            return
+            break
         item = item[0]
         it = {}
         it["date"] = tools.IntToDate(date)
@@ -244,7 +244,7 @@ def data_profile(request):
     for i in xrange(4):
         item = DayData.objects.filter(user=user,date=date)
         if len(item) == 0:
-            return
+            break
         it = {}
         it["date"] = tools.IntToDate(date)
         step_value = step_object = cal_value = cal_object = dis_value = dis_object = sleep_value = sleep_object = 0
@@ -262,7 +262,7 @@ def data_profile(request):
             item = DayData.objects.filter(user=user,date=date)
             if len(item) == 0:
                 item = None
-                return
+                break
         it["step_value"] = step_value
         it["step_object"] = step_object
         it["cal_value"] = cal_value
@@ -273,7 +273,7 @@ def data_profile(request):
         it["sleep_object"] = sleep_object
         data["chart_data"]["week"].append(it)
         if not item:
-            return
+            break
     data["chart_data"]["week"].reverse()
     date = tools.getDate()
     year = date / 10000
@@ -283,7 +283,7 @@ def data_profile(request):
         date = year * 10000 + month * 100 + day
         item = DayData.objects.filter(user=user,date=date)
         if len(item) == 0:
-            return
+            break
         it = {}
         step_value = step_object = cal_value = cal_object = dis_value = dis_object = sleep_value = sleep_object = 0
         it["date"] = "%04d-%02d" % (year, month)
@@ -292,7 +292,7 @@ def data_profile(request):
             item = DayData.objects.filter(user=user,date=date)
             if len(item) == 0:
                 item = None
-                return
+                break
             item = item[0]
             step_value += item.steps
             step_object += item.steps_goal
@@ -312,7 +312,7 @@ def data_profile(request):
         it["sleep_object"] = sleep_object
         data["chart_data"]["month"].apend(it)
         if not item:
-            return
+            break
     data["chart_data"]["month"].reverse()
     data["chart_data"] = json.dumps(data["chart_data"])
     if not flag:
