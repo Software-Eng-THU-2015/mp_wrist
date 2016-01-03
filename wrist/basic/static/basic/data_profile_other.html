@@ -36,6 +36,7 @@
         <div class="link" to={{href}} style="display: none"></div>
         <div id="userId" userId={{userId}} css="display: none"></div>
         <div class="data" page="4" style="display: none"></div>
+        <div class="chartData" style="display: none">{{chart_data}}</div>
         <div class="circle">
             <img src={{image}}>
         </div>
@@ -120,9 +121,9 @@
         {{/data_report}}
         </div>
         {{#if isFriend}}
-        <button type="button" class="btn btn-danger btn-lg">删除好友</button>
+        <button class="friend" userId={{id}} type="button" class="btn btn-danger btn-lg">删除好友</button>
         {{else}}
-        <button type="button" class="btn btn-success btn-lg" style="width:100%">加为好友</button>
+        <button class="friend" userId={{id}} type="button" class="btn btn-success btn-lg">加为好友</button>
         {{/if}}
         <div class="box"></div>
         <div class="foot">
@@ -139,7 +140,6 @@
         var tpl = $(".template").html();
         var template = Handlebars.compile(tpl);
         var url = domain + "/basic/data/profile?userId=" + userId;
-        var chart_data = [];
         getData(url, function(data){
             var json = eval("(" + data + ")");
             if(json.error){
@@ -153,12 +153,13 @@
                 });
             }
             else{
-                chart_data = json.chart;
                 $("body").html(template(json));
                 $(".box").height($(".foot").height());
                 yepnope({
                     test:true,
-                    yep:['/static/js/footer.js',]
+                    yep:['/static/js/footer.js',
+                    '/static/js/data_profile_js',
+                    '/static/js/data_profile_other_js']
                 });
             }
         });

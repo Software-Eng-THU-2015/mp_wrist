@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/static/css/semantic.min.css" />
     <link rel="stylesheet" href="/static/css/typicons.min.css" />
     <link rel="stylesheet" href="/static/css/footer.css" />
-	<title>�ƻ�˵��</title>
+	<title>计划说明</title>
 	<style type="text/css">
     body {
         background-color:#DADADAl
@@ -40,13 +40,13 @@
 	 <h2 class="ui header">
      {{title}}
      </h2>
-	 <i class="calendar icon"></i>�ƻ�ʱ��
+	 <i class="calendar icon"></i>计划时间
 	 <p>{{startTime}} - {{endTime}}</p>
-	 <i class="write square icon"></i>�ƻ�˵��
+	 <i class="write square icon"></i>计划说明
      <p>{{description}}</p>
      {{#if goal}}
-     <i class="write square icon"></i>�ƻ�Ŀ��
-     <p>{{goal}}��</p>
+     <i class="write square icon"></i>计划目标
+     <p>{{goal}}步</p>
      {{/if}}
 	 <i class="flag icon"></i>TAG
 	 <div class="description">
@@ -56,16 +56,16 @@
       </div>
      </div>
      {{#if isFollow}}
-    <button type="button" class="btn btn-danger btn-lg" style="width:100%">ȡ���ƻ�</button>
+    <button type="button" class="btn btn-danger btn-lg" style="width:100%">取消计划</button>
     {{else}}
-    <button type="button" class="btn btn-success btn-lg" style="width:100%">����ƻ�</button>
+    <button type="button" class="btn btn-success btn-lg" style="width:100%">加入计划</button>
     {{/if}}
   <div class="box"></div>
     <div class="foot">
-      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">����</span></button>
-      <button><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">����</span></button>
-      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">�㳡</span></button>
-      <button><span class="typcn typcn-home"></span><br><span id="fb_my">�ҵ�</span></button>
+      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+      <button><span class="typcn typcn-home"></span><br><span id="fb_my">我的</span></button>
     </div>
   </script>
   <script src="/static/js/handlebars.min.js"></script>

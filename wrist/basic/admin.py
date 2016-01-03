@@ -1,5 +1,5 @@
 from django.contrib import admin
-from basic.models import User, Team, Data, DayData, Good, Archive, Good
+from basic.models import User, Team, Data, DayData, Good, Archive
 
 # Register your models here.
 admin.site.register(User)

@@ -55,7 +55,7 @@ function monthMinus(months){
     return yy+ "-" + mm;
 }
 
-
+var chart_data = evel("(" + $(".chartData").html() + ")");
 //Day,Week,Month Datasets {"date": "", "object": "", "value": ""}
 var chartDayData = chart_data.day;
 

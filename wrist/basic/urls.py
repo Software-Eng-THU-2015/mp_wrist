@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^data/good', views.data_good),
     url(r'^data/friend', views.data_friend),
     url(r'^data/profile', views.data_profile),
+    url(r'^add/friend', views.friend_add),
 ]
