@@ -41,7 +41,7 @@ def redirect_profile(request):
 
 def bind(request):
     if request.method == "POST":
-        return HttpResponseRedirect("/basic/profile?page=3")
+        return HttpResponseRedirect("/basic/redirect/profile?page=3")
     else:
         request.session["userId"] = request.GET["openId"]
         return HttpResponseRedirect("/static/basic/data_bind.html")
@@ -215,233 +215,100 @@ def data_profile(request):
     {"period":[{"type_text":u"日距离","nav_distance":True,"type":"Days"},{"type_text":u"周距离","nav_distance":True,"type":"Weeks"},{"type_text":u"月距离","nav_distance":True,"type":"Months"}],"type":"Dis","num":3},
     {"period":[{"type_text":u"日睡眠","nav_sleep":True,"type":"Days"},{"type_text":u"周睡眠","nav_sleep":True,"type":"Weeks"},{"type_text":u"月睡眠","nav_sleep":True,"type":"Months"}],"type":"Sleep","num":4},
     ]
-    data["chart_data"] = []
-    data["chart_data"]["day"] = [
-                {
-                    "date": "2015-11-29",
-                    "step_object": 300,
-                    "step_value": 508,
-                    "cal_object": 2000,
-                    "cal_value": 1500
-                },
-                {
-                    "date": "2015-11-30",
-                    "step_object": 482,
-                    "step_value": 520,
-                    "cal_object": 1000,
-                    "cal_value": 500
-                },
-                {
-                    "date": "2015-12-01",
-                    "step_object": 430,
-                    "step_value": 562,
-                    "cal_object": 2000,
-                    "cal_value": 3500
-                },
-                {
-                    "date": "2015-12-02",
-                    "step_object": 500,
-                    "step_value": 379,
-                    "cal_object": 2000,
-                    "cal_value": 2500
-                },
-                {
-                    "date": "2015-12-03",
-                    "step_object": 700,
-                    "step_value": 501,
-                    "cal_object": 1800,
-                    "cal_value": 2000
-                },
-                {
-                    "date": "2015-12-04",
-                    "step_object": 650,
-                    "step_value": 443,
-                    "cal_object": 2000,
-                    "cal_value": 1500
-                },
-                {
-                    "date": "2015-12-05",
-                    "step_object": 200,
-                    "step_value": 405,
-                    "cal_object": 1000,
-                    "cal_value": 1500
-                },
-                {
-                    "date": "2015-12-06",
-                    "Size": 14,
-                    "step_object": 400,
-                    "step_value": 309,
-                    "cal_object": 2500,
-                    "cal_value": 1000
-                },
-                {
-                    "date": "2015-12-07",
-                    "step_object": 500,
-                    "step_value": 287,
-                    "cal_object": 2000,
-                    "cal_value": 3500
-                },
-                {
-                    "date": "2015-12-08",
-                    "step_object": 800,
-                    "step_value": 485,
-                    "cal_object": 3000,
-                    "cal_value": 1000
-                },
-                {
-                    "date": "2015-12-09",
-                    "step_object": 500,
-                    "step_value": 890,
-                    "cal_object": 2000,
-                    "cal_value": 1500
-                },
-                {
-                    "date": "2015-12-10",
-                    "step_object": 500,
-                    "step_value": 810,
-                    "cal_object": 2592,
-                    "cal_value": 1222
-                },
-                {
-                    "date": "2015-12-11",
-                    "step_object": 800,
-                    "step_value": 670,
-                    "cal_object": 2050,
-                    "cal_value": 2500
-                },
-                {
-                    "date": "2015-12-12",
-                    "step_object": 360,
-                    "step_value": 540,
-                    "cal_object": 2200,
-                    "cal_value": 1760
-                }
-            ]
-    data["chart_data"]["week"] = [
-                {
-                    "date": "2015-11-12",
-                    "step_object": 1320,
-                    "step_value": 1000,
-                    "week": 46,
-                    "cal_object": 22000,
-                    "cal_value": 31500
-                },
-                {
-                    "date": "2015-11-19",
-                    "step_object": 820,
-                    "step_value": 1882,
-                    "week": 47,
-                    "cal_object": 19000,
-                    "cal_value": 18050              
-                },
-                {
-                    "date": "2015-11-26",
-                    "step_object": 3200,
-                    "step_value": 4809,
-                    "week": 48,
-                    "cal_object": 19540,
-                    "cal_value": 10101          
-                },
-                {
-                    "date": "2015-12-05",
-                    "step_object": 2820,
-                    "step_value": 3000,
-                    "week": 49,
-                    "cal_object": 14000,
-                    "cal_value": 16800
-                },
-                {
-                    "date": "2015-12-12",
-                    "step_object": 3000,
-                    "step_value": 2500,
-                    "week": 50,
-                    "cal_object": 15000,
-                    "cal_value": 17000
-                },
-                {
-                    "date": "2015-12-19",
-                    "step_object": 3000,
-                    "step_value": 2500,
-                    "week": 51,
-                    "cal_object": 20500,
-                    "cal_value": 15000
-                },
-                {
-                    "date": "2015-12-25",
-                    "step_object": 4000,
-                    "step_value": 5500,
-                    "week": 52,
-                    "cal_object": 25012,
-                    "cal_value": 23013
-                },
-                {
-                    "date": "2016-01-02",
-                    "step_object": 5000,
-                    "step_value": 3000,
-                    "week": 53,
-                    "cal_object": 20040,
-                    "cal_value": 17231
-                }
-            ]
-    data["chart_data"]["month"] = [
-                {
-                    "date":"2015-06",
-                    "step_object":12346,
-                    "step_value":61234,
-                    "cal_object":50231,
-                    "cal_value":43212
-                },
-                {
-                    "date":"2015-07",
-                    "step_object":12347,
-                    "step_value":71234,
-                    "cal_object":55231,
-                    "cal_value":62212
-                },
-                {
-                    "date":"2015-08",
-                    "step_object":12348,
-                    "step_value":81234,
-                    "cal_object":32142,
-                    "cal_value":26515
-                },
-                {
-                    "date":"2015-09",
-                    "step_object":56700,
-                    "step_value":79682,
-                    "cal_object":61256,
-                    "cal_value":43212
-                },
-                {
-                    "date":"2015-10",
-                    "step_object":70000,
-                    "step_value":54000, 
-                    "cal_object":34151,
-                    "cal_value":33212
-
-                },
-                {
-                    "date":"2015-11",
-                    "step_object":36000,
-                    "step_value":54000,
-                    "cal_object":42231,
-                    "cal_value":33212
-                },
-                {
-                    "date":"2015-12",
-                    "step_object":5600,
-                    "step_value":2400,              
-                    "cal_object":12231,
-                    "cal_value":25612
-                },
-                {
-                    "date":"2016-01",
-                    "step_object":1230,
-                    "step_value":5430,              
-                    "cal_object":20231,
-                    "cal_value":14612
-                }
-            ]
+    data["chart_data"] = {"day":[],"week":[],"month":[]}
+    date = tools.getDate()
+    for i in xrange(7):
+        item = DayData.objects.filter(user=user,date=date)
+        if len(item) == 0:
+            return
+        item = item[0]
+        it = {}
+        it["date"] = tools.IntToDate(date)
+        it["step_value"] = item.steps
+        it["step_object"] = item.steps_goal
+        it["cal_value"] = item.calories
+        it["cal_object"] = item.calories_goal
+        it["dis_value"] = item.distance
+        it["dis_object"] = item.distance_goal
+        it["sleep_value"] = item.sleep
+        it["sleep_object"] = item.sleep_goal
+        data["chart_data"]["day"].append(it)
+        date = tools.getPreDate(date)
+    data["chart_data"]["day"].reverse()
+    date = tools.getDate()
+    for i in xrange(4):
+        item = DayData.objects.filter(user=user,date=date)
+        if len(item) == 0:
+            return
+        it = {}
+        it["date"] = tools.IntToDate(date)
+        step_value = step_object = cal_value = cal_object = dis_value = dis_object = sleep_value = sleep_object = 0
+        for j in xrange(7):
+            item = item[0]
+            step_value += item.steps
+            step_object += item.steps_goal
+            cal_value += item.calories
+            cal_object += item.calories_goal
+            dis_value += item.distance
+            dis_object += item.distance_goal
+            sleep_value += item.sleep
+            sleep_object += item.sleep_goal
+            date = tools.getPreDate(date)
+            item = DayData.objects.filter(user=user,date=date)
+            if len(item) == 0:
+                item = None
+                return
+        it["step_value"] = step_value
+        it["step_object"] = step_object
+        it["cal_value"] = cal_value
+        it["cal_object"] = cal_object
+        it["dis_value"] = dis_value
+        it["dis_object"] = dis_object
+        it["sleep_value"] = sleep_value
+        it["sleep_object"] = sleep_object
+        data["chart_data"]["week"].append(it)
+        if not item:
+            return
+    data["chart_data"]["week"].reverse()
+    date = tools.getDate()
+    year = date / 10000
+    month = date % 10000 / 100
+    day = date % 100
+    for i in xrange(3):
+        date = year * 10000 + month * 100 + day
+        item = DayData.objects.filter(user=user,date=date)
+        if len(item) == 0:
+            return
+        it = {}
+        step_value = step_object = cal_value = cal_object = dis_value = dis_object = sleep_value = sleep_object = 0
+        it["date"] = "%04d-%02d" % (year, month)
+        for j in xrange(day):
+            date = year * 10000 + month * 100 + day - j
+            item = DayData.objects.filter(user=user,date=date)
+            if len(item) == 0:
+                item = None
+                return
+            item = item[0]
+            step_value += item.steps
+            step_object += item.steps_goal
+            cal_value += item.calories
+            cal_object += item.calories_goal
+            dis_value += item.distance
+            dis_object += item.distance_goal
+            sleep_value += item.sleep
+            sleep_object += item.sleep_goal
+        it["step_value"] = step_value
+        it["step_object"] = step_object
+        it["cal_value"] = cal_value
+        it["cal_object"] = cal_object
+        it["dis_value"] = dis_value
+        it["dis_object"] = dis_object
+        it["sleep_value"] = sleep_value
+        it["sleep_object"] = sleep_object
+        data["chart_data"]["month"].apend(it)
+        if not item:
+            return
+    data["chart_data"]["month"].reverse()
     data["chart_data"] = json.dumps(data["chart_data"])
     if not flag:
         data["plans"] = []

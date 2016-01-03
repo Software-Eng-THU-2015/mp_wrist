@@ -162,7 +162,7 @@ def clickEvent(msg):
         tools.customSendTemplate(msg.source, tools.template_id["data"], "#000000", data, url)
         reply = ""
     elif msg.key == "V1001_DATA_BIND": #绑定手环
-        url = "%s/basic/redirect/bind?openId=%s" % (tools.domain, msg.source)
+        url = "%s/basic/bind?openId=%s" % (tools.domain, msg.source)
         data = {
           "content":{
             "value": u"请点击进入绑定",

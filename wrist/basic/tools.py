@@ -13,6 +13,16 @@ bong_activity = [
   [u"手环异常"]
 ]
 
+def monthDays(year, month):
+    if month in [1,3,5,7,8,10,12]:
+        return 31
+    elif month in [4,6,9,11]:
+        return 30
+    elif (not year % 100 == 0 and year % 4 == 0) or (year % 100 == 0 and year % 400 == 0):
+        return 29
+    else:
+        return 28    
+
 def getDate():
     date = time.strftime("%Y-%m-%d").split("-")
     for i in xrange(3):
@@ -24,7 +34,29 @@ def getDateTime():
     for i in xrange(3):
         date[i] = int(date[i])
     return date[0] * 10000 + date[1] * 100 + date[2]
+    
+def getNow():
+    return int(time.time())
+    
+def getPreDate(date):
+    y = date / 10000
+    m = date % 10000 / 100
+    d = date % 100
+    d -= 1
+    if d < 0:
+        m -= 1
+        if m < 1:
+            m = 12
+            y -= 1
+        d = monthDays(y,m)
+    return y * 10000 + m * 100 + d
 
+def IntToDate(date):
+    y = date / 10000
+    m = date % 10000 / 100
+    d = date % 100
+    return "%04d-%02d-%02d" % (y,m,d)
+    
 def left_time(now, endtime):
     pass
     
@@ -50,16 +82,6 @@ def getCreateTime(createTime):
 def today_Calories(user):
     dayData = DayData.objects.get(user=user,date=getDate())
     return dayData.calories
-
-def monthDays(year, month):
-    if month in [1,3,5,7,8,10,12]:
-        return 31
-    elif month in [4,6,9,11]:
-        return 30
-    elif (not year % 100 == 0 and year % 4 == 0) or (year % 100 == 0 and year % 400 == 0):
-        return 29
-    else:
-        return 28    
 
 def caloriesToStep(calories, height, weight):
     return calories

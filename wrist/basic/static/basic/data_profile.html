@@ -18,9 +18,6 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
     <script src="/static/js/semantic.min.js"></script>
-    <script src="/static/js/jquery.mobile.min.js"></script>
-    <script src="/static/basic/js/profile_amcharts.js"></script>
-    <script src="/static/basic/js/profile_serial.js"></script>
     <script>
         $(document).bind("mobileinit", function(){
             $.mobile.changePage.defaults.changeHash = false;
@@ -49,23 +46,23 @@
             <table class="form-data">
                 <tr>
                     <th class="form-name">身高</th>
-                    <td class="form-input"><input type="number" value=0 min=0 max=300 /></td>
+                    <td class="form-input"><input item="0" init={{height}} value={{height}} type="number" value=0 min=0 max=300 /></td>
                     <td class="form-last">cm</td>
                 </tr>
                 <tr>
                     <th class="form-name">体重</th>
-                    <td class="form-input"><input type="number" min=0 max=300 /></td>
+                    <td class="form-input"><input item="1" init={{weight}} value={{weight}} type="number" min=0 max=300 /></td>
                     <td class="form-last">kg</td>
                 </tr>
                 <tr>
                     <th class="form-name">步数目标</th>
-                    <td class="form-input"><input type="number" 
+                    <td class="form-input"><input item="2" init={{dayPlan}} value={{dayPlan}} type="number" 
                     min=0 max=1000000 /></td>
                     <td class="form-last">步</td>
                 </tr>
                 <tr>
                     <th class="form-name">睡眠目标</th>
-                    <td class="form-input"><input type="number" 
+                    <td class="form-input"><input item="3" init={{sleepPlan}} value={{sleepPlan}} type="number" 
                     min=0 max=24 /></td>
                     <td class="form-last">小时</td>
                 </tr>
@@ -80,7 +77,7 @@
         <div class="ui-mobile-viewport">
         {{#data_report}}
             {{#period}}
-           <div data-role="page" id="{{../type}}_{{type}}" data-theme="a">
+           <div data-role="page" class="report" id="{{../type}}_{{type}}" data-theme="a">
                 <div data-role="header" data-theme="a">
                     <h1>{{type_text}}数据</h1>
                 </div>
@@ -112,9 +109,21 @@
 
                 <div data-role="content">
                     <center>
+                        {{#if nav_day}}
                         <a class="button button-rounded button-tiny" href=""><font size="1" font color="black">Day</font></a>
-                        <a class="button button-rounded button-tiny" href="#Step_Weeks"><font size="1" font color="black">Week</font></a>
-                        <a class="button button-rounded button-tiny" href="#Step_Months"><font size="1" font color="black">Month</font></a>
+                        {{else}}
+                        <a class="button button-rounded button-tiny" href="#{{../type}}_Days"><font size="1" font color="black">Day</font></a>
+                        {{/if}}
+                        {{#if nav_week}}
+                        <a class="button button-rounded button-tiny" href=""><font size="1" font color="black">Week</font></a>
+                        {{else}}
+                        <a class="button button-rounded button-tiny" href="#{{../type}}_Weeks"><font size="1" font color="black">Week</font></a>
+                        {{/if}}
+                        {{#if nav_month}}
+                        <a class="button button-rounded button-tiny" href=""><font size="1" font color="black">Month</font></a>
+                        {{else}}
+                        <a class="button button-rounded button-tiny" href="#{{../type}}_Months"><font size="1" font color="black">Month</font></a>
+                        {{/if}}
                     </center>
                     <div id="{{type}}Chart{{../num}}" style="width:100%; height:400px;">
                     </div>
@@ -125,8 +134,9 @@
                 </div>
             </div>
             {{/period}}
-            <div data-role="dialog" id="{{type}}_Report" data-theme="a">
-                <div data-role="header" href="#{{type}}_Days" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-back ui-btn-icon-notext ui-shadow" role="button" data-form="ui-icon" data-role="button">Back</a>
+            <div data-role="dialog" class="report" id="{{type}}_Report" data-theme="a">
+                <div data-role="header" data-theme="a">
+                    <a title=" Back" href="#{{type}}_Days" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-back ui-btn-icon-notext ui-shadow" role="button" data-form="ui-icon" data-role="button">Back</a>
                 <h1>健康报告</h1>
                 </div>
                 <div data-role="content">
@@ -151,8 +161,7 @@
         var userId = href.substr(href.indexOf('?')+1);
         var tpl = $(".template").html();
         var template = Handlebars.compile(tpl);
-        var url = "http://wrist.ssast2015.com/basic/data/profile?userId=" + userId;
-        var chart_data = [];
+        var url = domain + "/basic/data/profile?userId=" + userId;
         getData(url, function(data){
             var json = eval("(" + data + ")");
             if(json.error){
@@ -166,12 +175,22 @@
                 });
             }
             else{
-                chart_data = json.chart;
                 $("body").html(template(json));
                 $(".box").height($(".foot").height());
                 yepnope({
                     test:true,
-                    yep:['/static/js/footer.js','/static/basic/js/data_profile.js']
+                    yep:['/static/js/footer.js',
+                    '/static/js/jquery.mobile.min.js',
+                    '/static/basic/js/profile_amcharts.js',
+                    '/static/basic/js/profile_serial.js',
+                     '/static/basic/js/data_profile.js',
+                     ],
+                   complete:function(){
+                    for(var i = 0;i < 3;i++){
+                    for(var j = 0;j < 2;j++)
+                        PaintChart(chartData,i,j);
+                    }
+                   }
                 });
             }
         });

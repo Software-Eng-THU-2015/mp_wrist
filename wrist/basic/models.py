@@ -56,7 +56,12 @@ class DayData(models.Model):
     date = models.IntegerField()
     steps = models.IntegerField(default=0)
     calories = models.IntegerField(default=0)
+    distance = models.IntegerField(default=0)
     sleep = models.IntegerField(default=0)
+    steps_goal = models.IntegerField(default=0)
+    calories_goal = models.IntegerField(default=0)
+    distance_goal = models.IntegerField(default=0)
+    sleep_goal = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "%s:%d" % (self.user.name, self.date)

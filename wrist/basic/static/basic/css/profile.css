@@ -79,11 +79,46 @@ input {
     border-bottom: 1px;
 }
 
-.archives {
-    background-color: #ff5656;
+.archives, #plans, #matchs {
     font-size: 3rem;
+}
+
+.archives {
+    background-color: #ff7c7c;
+}
+
+#plans {
+    background-color: #84ff84;
+}
+
+#match {
+    background-color: #96caff;
 }
 
 .ui.label {
     font-size: 2.5rem;
+}
+
+.ui-mobile [data-role=page], .ui-mobile [data-role=dialog], .ui-page{
+    top: 0;
+    left: 0;
+    width: 100%;
+    position: relative;
+    border: 0;
+}
+
+.ui-dialog-contain{
+    width:100%;
+    margin:0;
+    max-width:100%;
+    position:relative;
+    top:0;
+}
+
+input {
+    background-color: #e5e5e5
+}
+
+.friend {
+    width: 100%
 }

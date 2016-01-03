@@ -17,9 +17,6 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
     <script src="/static/js/semantic.min.js"></script>
-    <script src="/static/js/jquery.mobile.min.js"></script>
-    <script src="/static/basic/js/profile_amcharts.js"></script>
-    <script src="/static/basic/js/profile_serial.js"></script>
     <script>
         $(document).bind("mobileinit", function(){
             $.mobile.changePage.defaults.changeHash = false;
@@ -155,11 +152,21 @@
             else{
                 $("body").html(template(json));
                 $(".box").height($(".foot").height());
+                function PaintChartAll(){}
                 yepnope({
                     test:true,
                     yep:['/static/js/footer.js',
-                    '/static/basic/js/data_profile_js',
-                    '/static/basic/js/data_profile_other_js']
+                    '/static/js/jquery.mobile.min.js',
+                    '/static/basic/js/profile_amcharts.js',
+                    '/static/basic/js/profile_serial.js',
+                    '/static/basic/js/data_profile.js',
+                    '/static/basic/js/data_profile_other.js'],
+                   complete:function(){
+                    for(var i = 0;i < 3;i++){
+                    for(var j = 0;j < 2;j++)
+                        PaintChart(chartData,i,j);
+                    }
+                   }
                 });
             }
         });
