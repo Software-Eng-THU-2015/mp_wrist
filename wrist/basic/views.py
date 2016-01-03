@@ -165,27 +165,31 @@ def data_friend(request):
 
 def data_good(request):
 #    try:
-        user = request.GET["user"]
-        user = User.objects.get(openId=user)
-        target = int(request.GET["target"])
-        type = int(request.GET["type"])
-        item = Good.objects.filter(user=user,target=target,type=type)
-        if type == 0:
-            tmp = User.objects.get(id=target)
-        elif type == 1:
-            tmp = Plan.objects.get(id=target)
-        elif type == 2:
-            tmp = Match.objects.get(id=target)
-        goods = tmp.goods
-        if len(item) == 0:
-            item = Good(user=user,target=target,type=type)
-            item.save()
-            tmp.goods = goods + 1
-        else:
-            tmp.goods = goods - 1
-            item[0].delete()
-        tmp.save()
-        return HttpResponse("success")
+    if not "userId" in request.session:
+        return HttpResponse("error")
+    if not "user" in request.GET:
+        return HttpResponse("error")
+    if not request.GET["user"] == request.session["userId"]:
+        return HttpResponse("error")
+    user = request.GET["user"]
+    user = User.objects.get(openId=user)
+    target = int(request.GET["target"])
+    type = int(request.GET["type"])
+    item = Good.objects.filter(user=user,target=target,type=type)
+    if type == 0:
+        tmp = User.objects.get(id=target)
+    elif type == 1:
+        tmp = Plan.objects.get(id=target)
+    goods = tmp.goods
+    if len(item) == 0:
+        item = Good(user=user,target=target,type=type)
+        item.save()
+        tmp.goods = goods + 1
+    else:
+        tmp.goods = goods - 1
+        item[0].delete()
+    tmp.save()
+    return HttpResponse("success")
 #    except:
 #        return HttpResponse("error")
 
