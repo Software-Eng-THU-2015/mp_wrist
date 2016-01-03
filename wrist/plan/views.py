@@ -20,6 +20,7 @@ def redirect_plan(request):
     if not "userId" in request.session:
         return HttpResponseRedirect("/static/not_bind.html")
     page = int(request.GET["page"])
+    userId = request.session["userId"]
     if page == 0:
         url = "make"
     elif page == 1:
@@ -29,8 +30,10 @@ def redirect_plan(request):
     elif page == 3:
         url = "own"
     elif page == 4:
-        url = "rank"
-    url = "/static/plan/plan_%s.html?%s" % (url, request.session["userId"])
+        url = "profile"
+        id = request.GET["id"]
+        userId = "%s&%s" % (id, userId)
+    url = "/static/plan/plan_%s.html?%s" % (url, userId)
     return HttpResponseRedirect(url)
 
 def plan_make(request):
@@ -230,3 +233,29 @@ def plan_follow(request):
         return HttpResponse("success")
     except:
         return HttpResponse("error")
+        
+def plan_profile(request):
+    if not "userId" in request.session:
+        data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    data = {}
+    userId = data["userId"] = request.GET["userId"]
+    user = User.objects.get(openId=userId)
+    data["href"] = "%s/plan/redirect" % wechat_tools.domain
+    id = request.GET["id"]
+    plan = Plan.objects.get(id=id)
+    data["image"] = plan.image
+    data["title"] = plan.name
+    data["startTime"] = plan.startTime
+    data["endTime"] = plan.endTime
+    data["description"] = plan.description
+    if not plan.goal == 0:
+        data["goal"] = plan.goal
+    tags = plan.plan_ptag_plans.all()
+    data["tags"] = []
+    for tag in tags:
+        data["tags"].append(tag.name)
+    tmp = plan.members.filter(openId=userId)
+    if len(tmp) > 0:
+        data["isFollow"] = 1
+    return HttpResponse(json.dumps(data), content_type="application/json")

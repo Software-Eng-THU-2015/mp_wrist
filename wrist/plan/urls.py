@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^data/own', views.plan_own),
     url(r'^data/square', views.plan_square),
     url(r'^data/rank', views.plan_rank),
+    url(r'^data/profile', views.plan_profile),
     url(r'^submit/make', views.submit_make),
     url(r'^data/follow', views.plan_follow),
 ]
