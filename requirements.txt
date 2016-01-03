@@ -1,0 +1,6 @@
+django==1.9.0
+MySQL_python==1.2.5
+uwSGI==1.0.3
+wechatpy==1.2.1
+pycrypto==2.6.1
+requests==2.8.1
