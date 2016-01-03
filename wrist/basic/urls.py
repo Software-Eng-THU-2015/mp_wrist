@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^data/friend', views.data_friend),
     url(r'^data/profile', views.data_profile),
     url(r'^add/friend', views.friend_add),
+    url(r'^profile/data', views.profile_data),
 ]

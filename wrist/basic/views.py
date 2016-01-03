@@ -39,6 +39,7 @@ def redirect_profile(request):
     except:
         return HttpResponseRedirect("/static/404.html")
 
+@csrf_exempt
 def bind(request):
     if request.method == "POST":
         return HttpResponseRedirect("/basic/redirect/profile?page=3")
@@ -341,16 +342,44 @@ def data_profile(request):
     
 def friend_add(request):
 #    try:
-        user = request.GET["userId"]
-        user = User.objects.get(openId=user)
-        id = int(request.GET["target"])
-        type = int(request.GET["type"])
-        if type == 0:
-            target = User.objects.get(openId=id)
-            user.friends.add(target)
-        else:
-            target = user.friend.filter(openId=id)
-            user.friends.remove(target)
-        return HttpResponse("success")
+    if not "userId" in request.session:
+        return HttpResponse("error")
+    if not "userId" in request.GET:
+        return HttpResponse("error")
+    if not request.GET["userId"] == request.session["userId"]:
+        return HttpResponse("error")
+    user = request.GET["userId"]
+    user = User.objects.get(openId=user)
+    id = int(request.GET["target"])
+    type = int(request.GET["type"])
+    if type == 0:
+        target = User.objects.get(openId=id)
+        user.friends.add(target)
+    else:
+        target = user.friend.filter(openId=id)
+        user.friends.remove(target)
+    return HttpResponse("success")
 #    except:
 #        return HttpResponse("error")
+
+def profile_data(request):
+    if not "userId" in request.session:
+        return HttpResponse("error")
+    if not "userId" in request.GET:
+        return HttpResponse("error")
+    if not request.GET["userId"] == request.session["userId"]:
+        return HttpResponse("error")
+    userId = request.GET["userId"]
+    type = int(request.GET["type"])
+    value = int(request.GET["value"])
+    user = User.objects.get(openId=userId)
+    if type == 0:
+        user.height = value
+    elif type == 1:
+        user.weight = value
+    elif type == 2:
+        user.dayPlan = value
+    elif type == 3:
+        user.sleepPlan = value
+    user.save()
+    return HttpResponse("success")
