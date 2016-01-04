@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^data/square', views.match_square),
     url(r'^data/check', views.match_check),
     url(r'^data/profile', views.match_profile),
+    url(r'^join', views.match_join),
+    url(r'^list', views.match_list),
 ]

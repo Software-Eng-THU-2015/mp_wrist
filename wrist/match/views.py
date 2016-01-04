@@ -227,3 +227,60 @@ def match_profile(request):
         data["data_list"].append(item)
     data["data_list"].reverse()
     return HttpResponse(json.dumps(data), content_type="application/json")
+    
+def match_join(request):
+    if not "userId" in request.session:
+        return HttpResponse("error")
+    if not "userId" in request.GET:
+        return HttpResponse("error")
+    matchId = int(request.GET["id"])
+    match = Match.objects.get(id=matchId)
+    userId = request.GET["userId"]
+    user = User.objects.get(openId=userId)
+    if not "team" in request.GET:
+        team = tools.findTeam(match, user)
+        match.user_members.remove(user)
+        if team.type == 0:
+            match.members.remove(team)
+        else:
+            team.members.remove(user)
+        if len(match.user_members.all()) == 0:
+            match.delete()
+    else:
+        teamId = int(request.GET["team"])
+        if teamId == -1:
+            team = user.user_team_members.get(type=0)
+            match.members.add(team)
+        else:
+            team = Team.objects.get(id=teamId)
+            if team.type == 0:
+                member = team.members.all()[0]
+                team = Team(name=basic_tools.teamName(team,user),type=1)
+                team.members.add(member)
+            team.members.add(user)
+    return HttpResponse("success")
+        
+def match_list(request):
+    if not "userId" in request.session:
+        data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    if not request.GET["userId"] == request.session["userId"]:
+        data = {"error":{"title":u"权限问题","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    id = int(request.GET["target"])
+    match = Match.objects.get(id=id)
+    data = {"team":[]}
+    teams = match.members.all()
+    for team in teams:
+        item = {}
+        item["name"] = team.name
+        item["id"] = team.id
+        item["members"] = []
+        members = team.members.all()
+        for member in members:
+            item["members"].append({"name":member.name,"image":member.image})
+        data["team"].append(item)
+    return HttpResponse(json.dumps(data), content_type="application/json")

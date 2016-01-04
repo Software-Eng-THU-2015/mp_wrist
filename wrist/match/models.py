@@ -6,6 +6,7 @@ from basic.models import User, Team
 class Match(models.Model):
     creator = models.ForeignKey(User, related_name="user_match_creator")
     members = models.ManyToManyField(Team, related_name = "team_match_members")
+    user_members = models.ManyToManyField(User, related_name = "user_match_members")
     createTime = models.IntegerField(default=0)
     title = models.CharField(max_length=100, default="")
     description = models.TextField(default="")
