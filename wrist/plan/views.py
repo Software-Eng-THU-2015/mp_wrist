@@ -167,7 +167,7 @@ def submit_make(request):
             item.save()
         else:
             item = item[0]
-        if !item.plans.filter(id=plan.id).exists():
+        if not item.plans.filter(id=plan.id).exists():
             tags.append(tag)
             item.plans.add(plan)
     i = 0
@@ -181,7 +181,7 @@ def submit_make(request):
                 item.save()
             else:
                 item = item[0]
-            if !item.plans.filter(id=plan.id).exists():
+            if not item.plans.filter(id=plan.id).exists():
                 tags.append(tag)
                 item.plans.add(plan)
     prefix = os.environ.get("WRIST_HOME")

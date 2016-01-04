@@ -84,7 +84,7 @@ def submit_make(request):
             item.save()
         else:
             item = item[0]
-        if !item.matchs.filter(id=match.id).exists():
+        if not item.matchs.filter(id=match.id).exists():
             tags.append(tag)
             item.matchs.add(match)
     i = 0
@@ -98,7 +98,7 @@ def submit_make(request):
                 item.save()
             else:
                 item = item[0]
-            if !item.matchs.filter(id=match.id).exists():
+            if not item.matchs.filter(id=match.id).exists():
                 tags.append(tag)
                 item.matchs.add(match)
     match.user_members.add(user)
