@@ -17,15 +17,15 @@ def sendInvite(user, id, friendId):
       "friend":{
         "value": user.name,
         "color": "#ff0000",
-      }
+      },
       "name":{
         "value": u"%s计划" % plan.name,
         "color": "#007fff",
-      }
+      },
       "identity":{
         "value": u"伙伴",
         "color": "#ff0000",
-      }
+      },
       "remark":{
         "value": u"详情请点击查看",
         "color": "#666666"

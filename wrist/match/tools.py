@@ -35,15 +35,15 @@ def sendInvite(user, id, friendId, type):
       "friend":{
         "value": user.name,
         "color": "#ff0000",
-      }
+      },
       "name":{
         "value": u"%s比赛" % match.name,
         "color": "#007fff",
-      }
+      },
       "identity":{
         "value": identity,
         "color": "#ff0000",
-      }
+      },
       "remark":{
         "value": u"详情请点击查看",
         "color": "#666666"
