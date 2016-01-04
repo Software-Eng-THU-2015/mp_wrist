@@ -21,10 +21,8 @@ class Command(BaseCommand):
         date = tools.getDate()
         users = User.objects.all()
         for user in users:
-            tmp = DayData.objects.filter(user=user,date=date)
-            if len(tmp) == 0:
+            if DayData.objects.filter(user=user,date=date).count() == 0:
                 dayData = DayData(user=user,date=date)
+                tools.updateDayData(dayData, user)
                 dayData.save()
-            list = Data.objects.filter(user=user,date=preDate(date))
-            for data in list:
-                data.delete()
+            Data.objects.filter(user=user,date=preDate(date)).delete()

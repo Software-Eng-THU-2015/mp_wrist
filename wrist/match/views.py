@@ -253,13 +253,13 @@ def match_profile(request):
         for member in members:
             step = tools.getSingleProgress(match, member)
             steps += step
-            num += 1
             item["members"].append({
                 "image":member.image,
                 "name":member.name,
                 "step":step,
                 "num":num
                 })
+            num += 1
         item["step"] = steps
         data["data_list"].append(item)
     data["data_list"] = sorted(data["data_list"], key=lambda item : item["step"], reverse=True)

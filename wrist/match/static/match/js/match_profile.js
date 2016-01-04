@@ -39,7 +39,7 @@ for(var i = 0;i < nodes.length;i++){
     if(ld - gap * 3 == 2)
         width = "50%";
     var node = $(nodes[i]);
-    if(parseInt(node.attr("num")) / 3 <= gap)
+    if(Math.floor(parseInt(node.attr("num")) / 3) <= gap-1)
        node.css({"width": "33.3%"});
     else
        node.css({"width": width});

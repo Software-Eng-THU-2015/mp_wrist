@@ -68,7 +68,7 @@ def subEvent(msg):
         if len(users) > 0:
             user = users[0]
         else:
-            user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source)
+            user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source,comment=u"现在还是空的><")
             user.save()
             team = Team(name=basic_tools.teamName(None, username),type=0)
             team.save()
@@ -80,9 +80,9 @@ def subEvent(msg):
         user.save()
         date = basic_tools.getDate()
         #如果DayData不存在，则创建
-        tmp = DayData.objects.filter(user=user,date=date)
-        if len(tmp) == 0:
+        if DayData.objects.filter(user=user,date=date).count() == 0:
             dayData = DayData(user=user,date=date)
+            basic_tools.updateDayData(dayData, user)
             dayData.save()
     except:
         username = ""
@@ -129,6 +129,7 @@ def clickEvent(msg):
         data = DayData.objects.filter(user=user,date=date)
         if len(data) == 0:
             data = DayData(user=user,date=date)
+            basic_tools.updateDayData(data, user)
             data.save()
         else:
             data = data[0]
@@ -243,7 +244,7 @@ def clickEvent(msg):
             url = "%s/match/redirect/profile?page=0" % tools.domain
             tools.customSendTemplate(msg.source, tools.template_id["msg"], "#000000", data, url)
         else:   #返回最近的比赛的进度
-            left_time = basic_tools.left_time(now, closest_match.endtime)
+            left_time = basic_tools.left_time(now, closest_match.endTime)
             steps = match_tools.getProgress(closest_match, user)
             data = {
                 "object":{

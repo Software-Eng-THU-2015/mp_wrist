@@ -1,0 +1,4 @@
+ 25 * * * * ./home/softeng3/wrist/bin/dataUpdate.sh
+ 10 0 * * * ./home/softeng3/wrist/bin/dataInit.sh
+ 50 22 * * * ./home/softeng3/wrist/bin/dataSend.sh
+ 0 8 * * 1 ./home/softeng3/wrist/bin/healthReport.sh

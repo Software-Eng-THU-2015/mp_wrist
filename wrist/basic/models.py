@@ -14,6 +14,7 @@ class User(models.Model):
     uid = models.CharField(max_length=100, default="")
     dayPlan = models.IntegerField(default=0)
     sleepPlan = models.IntegerField(default=0)
+    steps = models.IntegerField(default=0)
     comment = models.TextField(default="", blank=True)
     friends = models.ManyToManyField('self', related_name='user_user_friends', blank=True)
      

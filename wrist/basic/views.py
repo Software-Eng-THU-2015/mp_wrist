@@ -455,7 +455,17 @@ def profile_data(request):
         user.weight = value
     elif type == 2:
         user.dayPlan = value
+        dayData = DayData.objects.get(user=user,date=tools.getDate())
+        dayData.steps_goal = value
+        h = user.height
+        w = user.weight
+        dayData.distance_goal = tools.stepToDis(value, h, w)
+        dayData.calories_goal = tools.stepToCalories(value, h, w)
+        dayData.save()
     elif type == 3:
         user.sleepPlan = value
+        dayData = DayData.objects.get(user=user,date=tools.getDate())
+        dayData.sleep_goal = value
+        dayData.save()
     user.save()
     return HttpResponse("success")

@@ -91,10 +91,32 @@ def getCreateTime(createTime):
 
 def caloriesToStep(calories, height, weight):
     return calories
+
+def stepToCalories(steps, height, weight):
+    return steps
     
 def caloriesToDis(calories, height, weight):
     return calories
+  
+def stepToDis(steps, height, weight):
+    return steps
+    
+def updateDayData(dayData, user):
+    s = user.dayPlan
+    h = user.height
+    w = user.weight
+    dayData.steps_goal = s
+    dayData.calories_goal = stepToCalories(s,h,w)
+    dayData.distance_goal = stepToDis(s,h,w)
+    dayData.sleep_goal = user.sleepPlan
 
+def modifiedDayData(dayData, user):
+    c = dayData.calories
+    h = user.height
+    w = user.weight
+    dayData.distance = caloriesToDis(c,h,w)
+    dayData.steps = caloriesToStep(c,h,w)
+    
 def teamName(team, username):
     if not team:
         return username
