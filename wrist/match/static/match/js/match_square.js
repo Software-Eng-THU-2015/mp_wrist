@@ -13,14 +13,9 @@ $('.follow.button').click(function(){
   if($(this).hasClass('blue'))
       getData(URL, function(){});
   else{
-      var modal = $("#matchModal");
-      if(modal.hasClass("in")){
-          modal.css({"display":
-          "none"});
-      }
-      else{
-          modal.css({"display": "block","padding-left":"0px"});
-      }
-      modal.toggleClass("in");
+      var tpl = $($(".template")[1]).html();
+      var template = Handlebars.compile(tpl);
+      $(".tip.modal").html(template());
+      $("#matchModal").modal("show");
   }
 });

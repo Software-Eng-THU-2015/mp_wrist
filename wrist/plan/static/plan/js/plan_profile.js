@@ -1,15 +1,6 @@
-$('.follow.button').
-	state({
-	    text:{
-		inactive : '<i class="paw icon"></i>Follow',
-		active: '<i class="paw icon"></i>Following'
-	    }
-	});
-    
 var userId = $("#userId").attr("userId");
 
 $('.follow.button').click(function(){
-   $(this).toggleClass('blue');
    var URL = domain + "/plan/follow?&user=" + userId + "&target=" + $(this).attr("userId");
    getData(URL, function(){});
 });

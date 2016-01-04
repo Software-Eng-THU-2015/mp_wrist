@@ -53,7 +53,7 @@ function tagClick(e){
 }
 
 function friendClick(e){
-   var node = $("#tags .extra");
+   var node = $("#friends .extra");
    node.append("<div class='ui label'>" + this.textContent + "</div><input name='friend' value=" + $(this).attr("userId") + " style='display: none'>");
 }
 

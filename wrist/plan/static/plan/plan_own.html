@@ -27,7 +27,7 @@
      </div>
      </div>
 	 </a>
-
+    <br><br>
   <div class="ui divided items">
   {{#data_list}}
    {{#if isFinished}}
@@ -88,7 +88,7 @@
         var userId = href.substr(href.indexOf('?')+1);
         var tpl = $(".template").html();
         var template = Handlebars.compile(tpl);
-        var url = "http://wrist.ssast2015.com/plan/data/square&userId=" + userId;
+        var url = "http://wrist.ssast2015.com/plan/data/square?userId=" + userId;
         getData(url, function(data){
             var json = eval("(" + data + ")");
             if(json.error){

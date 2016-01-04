@@ -18,9 +18,10 @@ from django.contrib import admin
 from match import views
 
 urlpatterns = [
-    url(r'^redirect', views.redirect_match),
+    url(r'^redirect/profile', views.redirect_match),
     url(r'^data/make', views.match_make),
     url(r'^submit/make', views.submit_make),
     url(r'^data/square', views.match_square),
     url(r'^data/check', views.match_check),
+    url(r'^data/profile', views.match_profile),
 ]

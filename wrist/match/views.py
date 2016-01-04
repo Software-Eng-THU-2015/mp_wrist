@@ -26,6 +26,10 @@ def redirect_match(request):
         url = "check"
     elif page == 2:
         url = "square"
+    elif page == 3:
+        url = "profile"
+        id = request.GET["id"]
+        userId = "%s%s" % (id, userId)
     url = "/static/match/match_%s.html?%s" % (url, userId)
     return HttpResponseRedirect(url)
 
@@ -33,13 +37,16 @@ def match_make(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data, content_type="application/json")
     if not request.GET["userId"] == request.session["userId"]:
         data = {"error":{"title":u"用户异常","content":u"请在公众号中创建自己的比赛"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
-    userId = data["userId"] = request.GET["userId"]
+    userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/match/redirect" % wechat_tools.domain
+    data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["tags"] = []
     tags = MTag.objects.all()
     for tag in tags:
@@ -89,10 +96,13 @@ def match_square(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data, content_type="application/json")
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/match/redirect" % wechat_tools.domain
+    data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
     teams = Team.objects.all()
     data["teams"] = []
@@ -114,6 +124,8 @@ def match_square(request):
         item["title"] = match.title
         item["description"] = match.description
         item["image"] = match.image
+        if match.finished == 1:
+            item["isFinished"] = 1
         item["tags"] = []
         tags = match.match_mtag_matchs.all()
         for tag in tags:
@@ -132,10 +144,16 @@ def match_check(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data, content_type="application/json")
+    if not request.GET["userId"] == request.session["userId"]:
+        data = {"error":{"title":u"权限不足","content":u"你无法查看别人的比赛"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/match/redirect" % wechat_tools.domain
+    data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
     matchs = user.user_match_creator.all()
     for match in matchs:
@@ -146,6 +164,56 @@ def match_check(request):
         item["title"] = match.title
         item["description"] = match.description
         item["image"] = match.image
+        if match.finished == 1:
+            item["isFinished"] = 1
+        item["tags"] = []
+        tags = match.match_mtag_matchs.all()
+        for tag in tags:
+            item["tags"].append(tag.name)
+        teams = match.members.all()
+        for team in teams:
+            tmp = team.members.filter(openId=userId)
+            if len(tmp) > 0:
+                item["isFollow"] = 1
+                break
+        data["data_list"].append(item)
+    data["data_list"].reverse()
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+def match_profile(request):
+    if not "userId" in request.session:
+        data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data, content_type="application/json")
+    data = {}
+    userId = data["userId"] = request.session["userId"]
+    user = User.objects.get(openId=userId)
+    data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
+    data["data_list"] = []
+    teams = Team.objects.all()
+    data["teams"] = []
+    for team in teams:
+        item = {}
+        item["name"] = team.name
+        item["members"] = []
+        members = team.members.all()
+        for member in members:
+            item["members"].append({"image":member.image,"name":member.name})
+        data["teams"].append(item)
+    matchs = Match.objects.all()[:20]
+    for match in matchs:
+        item = {}
+        item["user_image"] = match.creator.image
+        item["user_name"] = match.creator.name
+        item["userId"] = match.id
+        item["createTime"] = basic_tools.getCreateTime(match.createTime)
+        item["title"] = match.title
+        item["description"] = match.description
+        item["image"] = match.image
+        if match.finished == 1:
+            item["isFinished"] = 1
         item["tags"] = []
         tags = match.match_mtag_matchs.all()
         for tag in tags:

@@ -144,7 +144,7 @@ def submit_make(request):
     userId = request.POST["userId"]
     user = User.objects.get(openId=userId)
     now = basic_tools.getNow()
-    plan = Plan(name=request.POST["plan_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13],endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),goal=request.POST["goal"],owner=user)
+    plan = Plan(name=request.POST["plan_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13]),endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),goal=request.POST["goal"],owner=user)
     prefix = os.environ.get("WRIST_HOME")
     path = "/media/plan/"
     if not os.path.exists(prefix+path):

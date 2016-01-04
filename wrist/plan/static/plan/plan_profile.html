@@ -54,11 +54,24 @@
         <div class="ui label">{{this}}</div>
      {{/each}}
       </div>
+     <div class="good">
+        <span>
+            <i class="user icon"></i>{{goods}} people
+        </span>
+        {{#if isGood}}
+        <div class="red ui like button" userId={{id}}>
+        {{else}}
+        <div class="ui like button" userId={{id}}>
+        {{/if}}
+          <i class="heart icon"></i>
+          Like
+        </div>
+     </div>
      </div>
      {{#if isFollow}}
-    <button type="button" class="btn btn-danger btn-lg" style="width:100%">取消计划</button>
+    <button type="button" class="follow button btn btn-danger btn-lg" style="width:100%">取消计划</button>
     {{else}}
-    <button type="button" class="btn btn-success btn-lg" style="width:100%">加入计划</button>
+    <button type="button" class="follow button btn btn-success btn-lg" style="width:100%">加入计划</button>
     {{/if}}
   <div class="box"></div>
     <div class="foot">

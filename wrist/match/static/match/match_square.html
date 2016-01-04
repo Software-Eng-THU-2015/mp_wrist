@@ -8,12 +8,6 @@
     <link rel="stylesheet" href="/static/css/footer.css" />
 	<title>比赛广场</title>
 	<style type="text/css">
-	#rankTable {
-		position: absolute;
-		left: 0;
-		right: 0;
-		width: 100%;
-	}
 	 body {
 	   background-color:#DADADA;
 	 }
@@ -23,6 +17,7 @@
     <script src="/static/js/yepnope.min.js"></script>
     <script src="/static/js/semantic.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/handlebars.min.js"></script>
 </head>
 
 <body>
@@ -39,6 +34,7 @@
      </div>
      </div>
 	 </a>
+     <br><br><br><br>
   <div class="ui link centered cards">
   {{#data_list}}
   <div class="card">
@@ -49,7 +45,7 @@
     <div class="image">
       <img src={{image}}>
     </div>
-    <div class="content">
+    <div userId={{id}} class="profileLink content">
       <div class="header">{{title}}</div>
       <i class="calendar icon"></i>竞赛时间
       <p>{{startTime}}-{{endTime}}</p>
@@ -83,6 +79,7 @@
   </div>
   {{/data_list}}
   </div>
+  <div class="tip modal"></div>
   <div class="box"></div>
     <div class="foot">
       <button page="0"><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
@@ -90,11 +87,10 @@
       <button page="2"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
     </div>
   </script>
-  <script src="/static/js/handlebars.min.js"></script>
   <script>
         var href = window.location.href;
         var userId = href.substr(href.indexOf('?')+1);
-        var tpl = $(".template").html();
+        var tpl = $($(".template")[0]).html();
         var template = Handlebars.compile(tpl);
         var url = domain + "/match/data/square?userId=" + userId;
         getData(url, function(data){
@@ -120,7 +116,30 @@
         });
   </script>
   </div>
-  <script class="template" >
+  <script class="template" type="text/x-handlebars-template">
+    <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss=
+                    "modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="matchModalLabel">
+                        选择你的队伍
+                    </h4>
+                </div>
+                <div> class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确认
+                    </button>
+                </div>
+           </div>
+       </div>
+    </div>
   </script>
 </body>
 </html>

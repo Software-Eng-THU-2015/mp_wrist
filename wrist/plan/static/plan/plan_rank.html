@@ -126,7 +126,7 @@
         var userId = href.substr(href.indexOf('?')+1);
         var tpl = $(".template").html();
         var template = Handlebars.compile(tpl);
-        var url = domain + "/plan/data/rank&userId=" + userId;
+        var url = domain + "/plan/data/rank?userId=" + userId;
         getData(url, function(data){
             var json = eval("(" + data + ")");
             if(json.error){

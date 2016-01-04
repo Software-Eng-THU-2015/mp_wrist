@@ -9,10 +9,8 @@ class Match(models.Model):
     createTime = models.IntegerField(default=0)
     title = models.CharField(max_length=100, default="")
     description = models.TextField(default="")
-    startTime = models.CharField(max_length=20, default="")
-    endTime = models.CharField(max_length=20, default="")
-    endDate = models.IntegerField(default=0)
-    endDateTime = models.IntegerField(default=0)
+    startTime = models.IntegerField(default=0)
+    endTime = models.IntegerField(default=0)
     image = models.CharField(max_length=200, default="")
     finished = models.IntegerField(default=0)
 

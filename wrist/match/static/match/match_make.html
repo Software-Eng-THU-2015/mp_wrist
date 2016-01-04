@@ -65,6 +65,7 @@
                         <div class="form-group" id="tags">
                                 <label>比赛标签：</label>
                                 <input type="text" value="" placeholder="(可选)" class="form-control" name="tags">
+                                <div class="extra"></div>
                                 <span id="tag_add" class="fui-plus-circle"></span> 
                                 <div class="btn-group">
                                     <ul role="menu" class="dropdown-menu">
@@ -76,24 +77,25 @@
                         </div>
                         <div class="form-group" id="friends">
                                 <label>邀请队友：</label>
-                                <input type="text" value="" placeholder="(可选)" class="form-control" name="friends">
+                                <input readonly type="text" value="" placeholder="(可选)" class="form-control" name="friends">
+                                <div class="extra"></div>
                                 <span id="friend_add" class="fui-plus-circle"></span> 
                                 <div class="btn-group">
                                     <ul role="menu" class="dropdown-menu">
                                     {{#each friends}}
-                                        <li><img src={{image}} class="ui avatar image">{{name}}</li>
+                                        <li userId={{userId}}><img src={{image}} class="ui avatar image">{{name}}</li>
                                     {{/each}}
                                     </ul>
                                 </div>
                         </div>
                         <div class="form-group" id="opponents">
                                 <label>邀请对手：</label>
-                                <input type="text" value="" placeholder="(可选)" class="form-control" name="opponents">
+                                <input readonly type="text" value="" placeholder="(可选)" class="form-control" name="opponents">
                                 <span id="opponent_add" class="fui-plus-circle"></span> 
                                 <div class="btn-group">
                                     <ul role="menu" class="dropdown-menu">
                                     {{#each opponents}}
-                                        <li><img src={{image}} class="ui avatar image">{{name}}</li>
+                                        <li userId={{userId}}><img src={{image}} class="ui avatar image">{{name}}</li>
                                     {{/each}}
                                     </ul>
                                 </div>
