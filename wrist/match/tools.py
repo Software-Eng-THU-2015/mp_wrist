@@ -32,6 +32,7 @@ def getProgress(match, user):
     result = 0
     for member in members:
         result += getSingleProgress(match, member)
+    return result
     
 def getDefaultImageByTag(tags):
     return "/static/img/match_make.jpg"

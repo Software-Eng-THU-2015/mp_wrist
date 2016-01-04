@@ -166,7 +166,6 @@ def match_square(request):
         tmp = match.user_members.filter(openId=userId).count()
         if tmp > 0:
             item["isFollow"] = 1
-            break
         data["data_list"].append(item)
     data["data_list"].reverse()
     return HttpResponse(json.dumps(data), content_type="application/json")
@@ -192,6 +191,8 @@ def match_check(request):
         item["user_name"] = match.creator.name
         item["userId"] = match.id
         item["createTime"] = basic_tools.getCreateTime(match.createTime)
+        item["startTime"] = basic_tools.IntToDate(match.startTime)
+        item["endTime"] = basic_tools.IntToDate(match.endTime)
         item["title"] = match.title
         item["description"] = match.description
         item["image"] = match.image

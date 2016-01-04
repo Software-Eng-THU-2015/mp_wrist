@@ -52,10 +52,7 @@ def getPreDate(date):
     return y * 10000 + m * 100 + d
 
 def IntToDate(date):
-    y = date / 10000
-    m = date % 10000 / 100
-    d = date % 100
-    return "%04d-%02d-%02d" % (y,m,d)
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(date))
   
 def DateToInt(date):
     timeA = time.strptime(date, "%Y-%m-%d %H:%M:%S")
