@@ -22,14 +22,15 @@ $('.follow.button').click(function(){
       var json = eval("(" + data + ")");
       $(".tip").html(template(json));
       $("#matchModal").modal("show");
-      $("#matchModal .submit").on("click", {obj:this}, function(e){
+      $("#matchModal .submit").on("click", {obj:node}, function(e){
             var val = $("input[name='team']:checked").val();
             if(!val) return;
-            var node = $(e.data.obj);
+            var node = e.data.obj;
+            console.log(node);
             node.html('<i class="paw icon"></i>Joined');
             node.toggleClass('blue');
             $("#matchModal").modal("toggle");
-            getData(URL + "&team=" + val);
+            getData(URL + "&team=" + val,function(){});
       });  
       });
   }

@@ -248,13 +248,17 @@ def match_profile(request):
         item["members"] = []
         steps = 0
         members = team.members.all()
+        item["ld"] = members.count()
+        num = 0
         for member in members:
             step = tools.getSingleProgress(match, member)
             steps += step
+            num += 1
             item["members"].append({
                 "image":member.image,
                 "name":member.name,
-                "step":step
+                "step":step,
+                "num":num
                 })
         item["step"] = steps
         data["data_list"].append(item)
@@ -283,6 +287,12 @@ def match_join(request):
             match.members.remove(team)
         else:
             team.members.remove(user)
+            if team.members.all().count() == 1:
+                member = team.members.all()[0]
+                match.members.remove(team)
+                team.delete()
+                team = member.user_team_members.get(type=0)
+                match.members.add(team)
         if match.user_members.all().count() == 0:
             match.delete()
             result = "delete"

@@ -99,4 +99,4 @@ def teamName(team, username):
     if not team:
         return username
     else:
-        return u"%s的小队" % username
+        return u"%s的小队" % team.members.all()[0].name
