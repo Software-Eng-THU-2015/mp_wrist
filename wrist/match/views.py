@@ -39,7 +39,7 @@ def match_make(request):
         return HttpResponse(json.dumps(data), content_type="application/json")
     if not "userId" in request.GET:
         data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
-        return HttpResponse(json.dumps(data, content_type="application/json")
+        return HttpResponse(json.dumps(data), content_type="application/json")
     if not request.GET["userId"] == request.session["userId"]:
         data = {"error":{"title":u"用户异常","content":u"请在公众号中创建自己的比赛"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
