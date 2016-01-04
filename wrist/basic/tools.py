@@ -56,18 +56,13 @@ def IntToDate(date):
     m = date % 10000 / 100
     d = date % 100
     return "%04d-%02d-%02d" % (y,m,d)
+  
+def DateToInt(date):
+    timeA = time.strptime(date, "%Y-%m-%d %H:%M:%S")
+    return int(time.mktime(timeA))
     
 def left_time(now, endtime):
     pass
-    
-def splitDate(datetime):
-    t1, t2 = datetime.split(" ")
-    t1 = t1.split("-")
-    t2 = t2.split(":")
-    for i in xrange(3):
-        t1[i] = int(t1[i])
-        t2[i] = int(t2[i])
-    return t1[0] * 10000 + t1[1] * 100 + t1[2], t2[0] * 10000 + t2[1] * 100 + t2[2]
 
 def getCreateTime(createTime):
     return "1 Hour Ago"

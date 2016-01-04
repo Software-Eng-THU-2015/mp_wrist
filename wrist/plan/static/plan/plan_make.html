@@ -64,11 +64,12 @@
                         </div>
                         <div class="form-group" id="goal">
                             <label>计划目标:</label>
-                            <input type="text" value="" placeholder="(可选：步数，单位为步)" class="form-control" name="goal">
+                            <input type="number" value=0 placeholder="(可选：步数，单位为步)" class="form-control" name="goal">
                         </div>
                         <div class="form-group" id="tags">
                                 <label>计划标签：</label>
                                 <input type="text" value="" placeholder="(可选)" class="form-control" name="tags">
+                                <div class="extra"></div>
                                 <span id="tag_add" class="fui-plus-circle"></span> 
                                 <div class="btn-group">
                                     <ul role="menu" class="dropdown-menu">
@@ -81,11 +82,12 @@
                         <div class="form-group" id="friends">
                                 <label>邀请好友：</label>
                                 <input type="text" value="" placeholder="(可选)" class="form-control" name="friends">
+                                <div class="extra"></div>
                                 <span id="friend_add" class="fui-plus-circle"></span> 
                                 <div class="btn-group">
                                     <ul role="menu" class="dropdown-menu">
                                     {{#each friends}}
-                                        <li><img src={{image}} class="ui avatar image">{{name}}</li>
+                                        <li userId={{userId}}><img src={{image}} class="ui avatar image">{{name}}</li>
                                     {{/each}}
                                     </ul>
                                 </div>

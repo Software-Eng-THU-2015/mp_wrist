@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^redirect/profile', views.redirect_profile),
     url(r'^data/today', views.data_today),
     url(r'^data/rank', views.data_rank),
-    url(r'^data/good', views.data_good),
+    url(r'^data/goods', views.data_good),
     url(r'^data/friend', views.data_friend),
     url(r'^data/profile', views.data_profile),
     url(r'^add/friend', views.friend_add),

@@ -2,7 +2,6 @@
 
 import random
 import json
-import time
 import os
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
@@ -40,13 +39,16 @@ def plan_make(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
     if not request.GET["userId"] == request.session["userId"]:
         data = {"error":{"title":u"用户异常","content":u"请在公众号中制定自己的计划"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
     userId = data["userId"] = request.GET["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/plan/redirect" % wechat_tools.domain
+    data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["tags"] = []
     tags = PTag.objects.all()
     for tag in tags:
@@ -64,10 +66,14 @@ def plan_own(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
-    userId = data["userId"] = request.GET["userId"]
+    ownerId = data["userId"] = request.session["userId"]
+    userId = request.GET["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/plan/redirect" % wechat_tools.domain
+    data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
     plans = user.user_plan_owner.all()[:20]
     for plan in plans:
@@ -84,6 +90,8 @@ def plan_own(request):
         if len(tmp) > 0:
             item["isGood"] = 1
         item["isFollow"] = 1
+        if plan.finished == 1:
+            item["isFinished"] = 1
         data["data_list"].append(item)
     data["data_list"].reverse()
     return HttpResponse(json.dumps(data), content_type="application/json")
@@ -92,10 +100,13 @@ def plan_square(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/plan/redirect" % wechat_tools.domain
+    data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
     plans = Plan.objects.all()[:20]
     for plan in plans:
@@ -116,18 +127,25 @@ def plan_square(request):
         tmp = plan.members.filter(openId=userId)
         if len(tmp) > 0:
             item["isFollow"] = 1
+        if plan.finished == 1:
+            item["isFinished"] = 1
         data["data_list"].append(item)
     data["data_list"].reverse()
     return HttpResponse(json.dumps(data), content_type="application/json")
             
 @csrf_exempt
 def submit_make(request):
+    if not "userId" in request.session:
+        return HttpResponseRedirect("/static/not_bind.html")
+    if not "userId" in request.POST:
+        return HttpResponseRedirect("/static/404.html")
+    if not request.POST["userId"] == request.session["userId"]:
+        return HttpResponseRedirect("/static/404.html")
     userId = request.POST["userId"]
     user = User.objects.get(openId=userId)
-    now = int(time.time())
-    plan = Plan(name=request.POST["plan_name"],description=request.POST["comment"],createTime=now,startTime="%s:00:00" % request.POST["begintime"],endTime="%s:00:00" % request.POST["endtime"],goal=request.POST["goal"],owner=user)
-    plan.endDate, plan.endDateTime = basic_tools.splitDate(plan.endTime)
-    prefix = "/data/www/wrist"
+    now = basic_tools.getNow()
+    plan = Plan(name=request.POST["plan_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13],endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),goal=request.POST["goal"],owner=user)
+    prefix = os.environ.get("WRIST_HOME")
     path = "/media/plan/"
     if not os.path.exists(prefix+path):
         os.mkdir(prefix+path)
@@ -139,7 +157,7 @@ def submit_make(request):
     des.close()
     plan.image = file_name
     plan.save()
-    tags = request.POST["tags"].split("|")
+    tags = request.POST["tag"]
     for tag in tags:
         item = PTag.objects.filter(name=tag)
         if len(item) == 0:
@@ -148,49 +166,20 @@ def submit_make(request):
         else:
             item = item[0]
         item.plans.add(plan)
-    return HttpResponseRedirect("/plan/redirect?page=4")
-    
-def plan_share(request):
-#    try:
-        userId = request.GET["userId"]
-        user = User.objects.get(openId=userId)
-        data = basic_tools.Object()
-        data.userId = userId
-        data.list = []
-        plans = Plan.objects.all()
-        for plan in plans:
-            item = basic_tools.Object()
-            item.userId = plan.id
-            item.image = user.image
-            item.plan_image = plan.images
-            item.username = plan.owner.name
-            item.createTime = tools.getCreateTime(plan.createTime)
-            item.name = plan.name
-            item.description = plan.description
-            item.tags = []
-            tags = plan.plan_ptag_plans.all()
-            for tag in tags:
-                item.tags.append(tag.name)
-            tmp = Good.objects.filter(user=user,type=1,target=plan.id)
-            if len(tmp) > 0:
-                item.isLike = 1
-            tmp = plan.members.filter(openId=user.openId)
-            if len(tmp) > 0:
-                item.isFollow = 1
-            data.list.append(item)
-        return render_to_response("plan/plan_share.html", {"data": data}, context_instance=RequestContext(request))
-#    except:
-#        return render_to_response("404.html")
+    return HttpResponseRedirect("/plan/redirect?page=4&id=%d" % plan.id)
 
 def plan_rank(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
 #    try:
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/plan/redirect" % wechat_tools.domain
+    data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
     plans = Plan.objects.all()
     for plan in plans:
@@ -210,6 +199,8 @@ def plan_rank(request):
         tmp = plan.members.filter(openId=userId)
         if len(tmp) > 0:
             item["isFollow"] = 1
+        if plan.finished == 1:
+            item["isFinished"] = 1
         data["data_list"].append(item)
     data["data_list"] = sorted(data["data_list"], key=lambda user : user["goods"], reverse=True)
     ld = len(data["data_list"])
@@ -220,6 +211,12 @@ def plan_rank(request):
 #        return render_to_response("404.html")
 
 def plan_follow(request):
+    if not "userId" in request.session:
+        return HttpResponse("error")
+    if not "user" in request.GET:
+        return HttpResponse("error")
+    if not request.GET["user"] == request.session["userId"]:
+        return HttpResponse("error")
     try:
         userId = request.GET["user"]
         user = User.objects.get(openId=userId)
@@ -238,10 +235,13 @@ def plan_profile(request):
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
+    if not "userId" in request.GET:
+        data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
+        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
-    userId = data["userId"] = request.GET["userId"]
+    userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
-    data["href"] = "%s/plan/redirect" % wechat_tools.domain
+    data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     id = request.GET["id"]
     plan = Plan.objects.get(id=id)
     data["image"] = plan.image
@@ -258,4 +258,6 @@ def plan_profile(request):
     tmp = plan.members.filter(openId=userId)
     if len(tmp) > 0:
         data["isFollow"] = 1
+    if plan.finished == 1:
+        data["isFinished"] = 1
     return HttpResponse(json.dumps(data), content_type="application/json")

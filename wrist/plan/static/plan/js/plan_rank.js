@@ -14,3 +14,6 @@ $('.follow.button').click(function(){
    getData(URL, function(){});
 });
 
+$(".profileLink").click(function(){
+    window.location.href = $(".link").attr("to") + "?page=4&id=" + $(this).attr("userId");
+});

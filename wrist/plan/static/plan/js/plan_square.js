@@ -20,3 +20,7 @@ $('.like.button').click(function(){
    var URL = domain + "/basic/data/goods?type=1&user=" + userId + "&target=" + $(this).attr("userId");
    getData(URL, function(){});
 });
+
+$(".profileLink").click(function(){
+   window.location.href = $(".link").attr("to") + "?page=4&id=" + $(this).attr("userId"); 
+});

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/static/basic/css/profile.css" />
     <script src="/static/js/base.js"></script>
     <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
     <script src="/static/js/semantic.min.js"></script>
     <script>
@@ -72,7 +73,7 @@
         <div class="ui-mobile-viewport">
         {{#data_report}}
             {{#period}}
-           <div data-role="page" id="{{../type}}_{{type}}" data-theme="a">
+           <div data-role="page" class="report" id="{{../type}}_{{type}}" data-theme="a">
                 <div data-role="header" data-theme="a">
                     <h1>{{type_text}}数据</h1>
                 </div>
@@ -104,17 +105,42 @@
 
                 <div data-role="content">
                     <center>
+                        {{#if nav_day}}
                         <a class="button button-rounded button-tiny" href=""><font size="1" font color="black">Day</font></a>
-                        <a class="button button-rounded button-tiny" href="#Step_Weeks"><font size="1" font color="black">Week</font></a>
-                        <a class="button button-rounded button-tiny" href="#Step_Months"><font size="1" font color="black">Month</font></a>
+                        {{else}}
+                        <a class="button button-rounded button-tiny" href="#{{../type}}_Days"><font size="1" font color="black">Day</font></a>
+                        {{/if}}
+                        {{#if nav_week}}
+                        <a class="button button-rounded button-tiny" href=""><font size="1" font color="black">Week</font></a>
+                        {{else}}
+                        <a class="button button-rounded button-tiny" href="#{{../type}}_Weeks"><font size="1" font color="black">Week</font></a>
+                        {{/if}}
+                        {{#if nav_month}}
+                        <a class="button button-rounded button-tiny" href=""><font size="1" font color="black">Month</font></a>
+                        {{else}}
+                        <a class="button button-rounded button-tiny" href="#{{../type}}_Months"><font size="1" font color="black">Month</font></a>
+                        {{/if}}
                     </center>
                     <div id="{{type}}Chart{{../num}}" style="width:100%; height:400px;">
                     </div>
+        
+                    <a href="#{{../type}}_Report" data-role="button" data-rele="dialog" data-transition="flip">健康报告</a>
                     <div data-role="footer">
                     </div>
                 </div>
             </div>
             {{/period}}
+            <div data-role="dialog" class="report" id="{{type}}_Report" data-theme="a">
+                <div data-role="header" data-theme="a">
+                    <a title=" Back" href="#{{type}}_Days" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-back ui-btn-icon-notext ui-shadow" role="button" data-form="ui-icon" data-role="button">Back</a>
+                <h1>健康报告</h1>
+                </div>
+                <div data-role="content">
+                <h1>{{report}}</h1>
+                </div>
+                <div data-role="footer">
+                </div>
+           </div>
         {{/data_report}}
         </div>
         {{#if isFriend}}
@@ -163,7 +189,7 @@
                     '/static/basic/js/data_profile_other.js'],
                    complete:function(){
                     for(var i = 0;i < 3;i++){
-                    for(var j = 0;j < 2;j++)
+                    for(var j = 0;j < 4;j++)
                         PaintChart(chartData,i,j);
                     }
                    }

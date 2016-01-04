@@ -201,23 +201,23 @@ def clickEvent(msg):
         reply = ""
     elif msg.key == "V1001_PLAN_MAKE":  #制定计划
         articles = []
-        articles.append({"title":u"制定计划","description":u"快来制定你自己的运动计划吧!","image":"%s/static/img/plan_make.jpg" % tools.domain,"url":"%s/plan/redirect?page=0" % tools.domain})
+        articles.append({"title":u"制定计划","description":u"快来制定你自己的运动计划吧!","image":"%s/static/img/plan_make.jpg" % tools.domain,"url":"%s/plan/redirect/profile?page=0" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_PLAN_OWN":   #我的计划
         articles = []
-        articles.append({"title":u"查看我的","description":u"来看看你都有什么运动计划吧","image":"%s/static/img/plan_own.jpg" % tools.domain,"url":"%s/plan/redirect?page=3" % tools.domain})
+        articles.append({"title":u"查看我的","description":u"来看看你都有什么运动计划吧","image":"%s/static/img/plan_own.jpg" % tools.domain,"url":"%s/plan/redirect/profile?page=3" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_PLAN_SQUARE":    #计划广场
         articles = []
-        articles.append({"title":u"计划广场","description":u"新鲜出炉的运动计划","image":"%s/static/img/plan_square.jpg" % tools.domain,"url":"%s/plan/redirect?page=2" % tools.domain})
+        articles.append({"title":u"计划广场","description":u"新鲜出炉的运动计划","image":"%s/static/img/plan_square.jpg" % tools.domain,"url":"%s/plan/redirect/profile?page=2" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_PLAN_RANK":  #计划排行榜
         articles = []
-        articles.append({"title":u"计划排行榜","description":u"想知道什么计划更受欢迎么","image":"%s/static/img/plan_rank.jpg" % tools.domain,"url":"%s/plan/redirect?page=1" % tools.domain})
+        articles.append({"title":u"计划排行榜","description":u"想知道什么计划更受欢迎么","image":"%s/static/img/plan_rank.jpg" % tools.domain,"url":"%s/plan/redirect/profile?page=1" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_MATCH_MAKE": #创建比赛
         articles = []
-        articles.append({"title":u"创建比赛","description":u"开始一场新的比赛吧！","image":"%s/static/img/match_make.jpg" % tools.domain,"url":"%s/match/redirect?page=0" % tools.domain})
+        articles.append({"title":u"创建比赛","description":u"开始一场新的比赛吧！","image":"%s/static/img/match_make.jpg" % tools.domain,"url":"%s/match/redirect/profile?page=0" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_MATCH_CHECK":    #我的比赛进度查看
         closest_match = match_tools.closest_match(now)
@@ -236,7 +236,7 @@ def clickEvent(msg):
                     "color": "#666666"
                 }
             }
-            url = "%s/match/redirect?page=0" % tools.domain
+            url = "%s/match/redirect/profile?page=0" % tools.domain
             tools.customSendTemplate(msg.source, tools.template_id["msg"], "#000000", data, url)
         else:   #返回最近的比赛的进度
             left_time = basic_tools.left_time(now, closest_match.endtime)
@@ -259,12 +259,12 @@ def clickEvent(msg):
                     "color": "#666666"
                 }
             }
-            url = "%s/match/redirect?page=1" % tools.domain
+            url = "%s/match/redirect/profile?page=1" % tools.domain
             tools.customSendTemplate(msg.source, tools.template_id["progress"], "#000000", data, url)
         reply = ""
     elif msg.key == "V1001_MATCH_SQUARE": #比赛广场
         articles = []
-        articles.append({"title":u"比赛广场","description":u"新鲜出炉的比赛","image":"%s/static/img/match_square.jpg" % tools.domain,"url":"%s/match/redirect?page=2" % tools.domain})
+        articles.append({"title":u"比赛广场","description":u"新鲜出炉的比赛","image":"%s/static/img/match_square.jpg" % tools.domain,"url":"%s/match/redirect/profile?page=2" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     return HttpResponse(reply)
 

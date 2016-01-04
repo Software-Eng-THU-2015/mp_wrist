@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/static/basic/css/profile_other.css" />
     <script src="/static/js/base.js"></script>
     <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
     <script src="/static/js/semantic.min.js"></script>
     <script>
@@ -46,7 +47,7 @@
             <table class="form-data">
                 <tr>
                     <th class="form-name">身高</th>
-                    <td class="form-input"><input item="0" init={{height}} value={{height}} type="number" value=0 min=0 max=300 /></td>
+                    <td class="form-input"><input item="0" init={{height}} value={{height}} type="number" min=0 max=300 /></td>
                     <td class="form-last">cm</td>
                 </tr>
                 <tr>
@@ -187,7 +188,7 @@
                      ],
                    complete:function(){
                     for(var i = 0;i < 3;i++){
-                    for(var j = 0;j < 2;j++)
+                    for(var j = 0;j < 4;j++)
                         PaintChart(chartData,i,j);
                     }
                    }

@@ -310,7 +310,7 @@ def data_profile(request):
         it["dis_object"] = dis_object
         it["sleep_value"] = sleep_value
         it["sleep_object"] = sleep_object
-        data["chart_data"]["month"].apend(it)
+        data["chart_data"]["month"].append(it)
         if not item:
             break
     data["chart_data"]["month"].reverse()

@@ -1,9 +1,11 @@
 $("#input_image").fileinput({
    language: "zh",
    uploadUrl: domain + "/data/plan/make",
-   allowedFileExtensions: ["jpg", "png", "jpeg"],
+   allowedFileTypes: ["image"],
+   maxFileSize: 5120,
    showUpload: false,
    showCaption: false,
+   showCancel: true,
    browseClass: "btn btn-primary",
    previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
 });
@@ -16,6 +18,16 @@ $(".form_datetime").datetimepicker({
    minView: 1,
    language: 'zh-CN'
 });
+
+$("#tags input.form-control")[0].oninput = function(e){
+    var node = $(e.target);
+    var val = node.val();
+    if(val.indexOf(' ') != -1){
+        var content = val.substr(0, val.indexOf(' '));
+        node.val('');
+        $("#tags .extra").append("<div class='ui label'>" + content + "</div><input name='tag' value=" + content + " style='display: none'>");
+    }
+}
 
 var touch = ("ontouchstart" in window) || window.DocumentTouch && document instanceof DocumentTouch;
 
@@ -36,19 +48,13 @@ function friendsClick(e){
 }
 
 function tagClick(e){
-   var node = $("#tags input");
-   if(node.val() == "")
-        node.val(this.textContent);
-   else
-        node.val(node.val() + "|" + this.textContent);
+   var node = $("#tags .extra");
+   node.append("<div class='ui label'>" + this.textContent + "</div><input name='tag' value=" + this.textContent + " style='display: none'>");
 }
 
 function friendClick(e){
-   var node = $("#friends input");
-   if(node.val() == "")
-        node.val(this.textContent);
-   else
-        node.val(node.val() + "|" + this.textContent); 
+   var node = $("#tags .extra");
+   node.append("<div class='ui label'>" + this.textContent + "</div><input name='friend' value=" + $(this).attr("userId") + " style='display: none'>");
 }
 
 if(touch){

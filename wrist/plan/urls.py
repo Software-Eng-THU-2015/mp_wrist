@@ -18,7 +18,7 @@ from django.contrib import admin
 from plan import views
 
 urlpatterns = [
-    url(r'^redirect', views.redirect_plan),
+    url(r'^redirect/profile', views.redirect_plan),
     url(r'^data/make', views.plan_make),
     url(r'^data/own', views.plan_own),
     url(r'^data/square', views.plan_square),

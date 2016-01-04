@@ -38,7 +38,11 @@
 
   <div class="ui divided items">
   {{#data_list}}
+    {{#if isFinished}}
+    <div class="ui segment" style="background-color: #cccccc">
+    {{else}}
     <div class="ui segment">
+    {{/if}}
       <div class="ui large feed">
       <div class="event">
         <img src={{user_image}} class="ui avatar image">
@@ -54,6 +58,7 @@
       </div>
     </div>
     </div>
+    <div class="profileLink" userId=={{id}}>
     <h3 class="ui header">
       {{title}}
     </h3>
@@ -62,6 +67,7 @@
     </div>
     <div class="extra text">
       {{description}}
+    </div>
     </div>
     <p></p>
     <div class="extra">
