@@ -195,7 +195,7 @@ def data_good(request):
     elif type == 1:
         tmp = Plan.objects.get(id=target)
     goods = tmp.goods
-    if len(item) == 0:
+    if item.count() == 0:
         item = Good(user=user,target=target,type=type)
         item.save()
         tmp.goods = goods + 1
