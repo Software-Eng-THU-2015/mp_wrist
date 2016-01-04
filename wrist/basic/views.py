@@ -14,7 +14,10 @@ import tools
 # Create your views here.
 
 def get_session(request):
-    userId = request.session["userId"] = "ose6Ut8Ir-41wB7gQx89BifYa49Q"
+    if "userId" in request.GET:
+        userId = request.session["userId"] = request.GET["userId"]
+    else:
+        userId = request.session["userId"] = "ose6Ut8Ir-41wB7gQx89BifYa49Q"
     return HttpResponse(userId)
 
 def redirect_profile(request):

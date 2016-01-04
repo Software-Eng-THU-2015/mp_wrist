@@ -21,7 +21,9 @@ class TestUpdateUserData(TestCase):
         "friend0": self.user.openId,
         "opponent0": self.user.openId,
         "comment": "test_comment"
-        }=
+        }
+    
+    def test_plan_create(self):
         conn = httplib.HTTPConnection(wechat_tools.domain[7:])
         params = urllib.urlencode({
         "userId":self.user.openId,
@@ -38,6 +40,5 @@ class TestUpdateUserData(TestCase):
         conn.request("POST","/plan/submit/make",params,headers)
         res = conn.getresponse()
     
-    def test_plan_create(self):
         self.assertEqual(1, Match.objects.all().count())
         
