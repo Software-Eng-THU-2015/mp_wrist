@@ -69,7 +69,8 @@ def subEvent(msg):
             user = users[0]
         else:
             user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source)
-            team = Team(name=basic_tools.getTeamName(None, username),type=0)
+            user.save()
+            team = Team(name=basic_tools.teamName(None, username),type=0)
             team.save()
             team.members.add(user)
         user.name = username

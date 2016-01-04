@@ -118,6 +118,7 @@ def submit_make(request):
     else:
         file_name = tools.getDefaultImageByTag(tags)
     match.image = file_name
+    match.save()
     i = 0
     while ("friend%d" % i) in request.POST:
         tools.sendInvite(user, plan.id, request.POST["friend%d" % i], 0)
@@ -142,7 +143,10 @@ def match_square(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    matchs = Match.objects.all()[:20]
+    ld = Match.objects.all().count()
+    if ld < 20:
+        ld = 20
+    matchs = Match.objects.all()[ld-20:]
     for match in matchs:
         item = {}
         item["user_image"] = match.creator.image
@@ -220,8 +224,8 @@ def match_profile(request):
     data["title"] = match.title
     data["description"] = match.description
     data["image"] = match.image
-    data["startTime"] = match.startTime
-    data["endTime"] = match.endTime
+    data["startTime"] = basic_tools.IntToDate(match.startTime)
+    data["endTime"] = basic_tools.IntToDate(match.endTime)
     if match.finished == 1:
         data["isFinished"] = 1
     data["tags"] = []

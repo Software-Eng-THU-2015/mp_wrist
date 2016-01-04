@@ -81,4 +81,9 @@ class Good(models.Model):
     def __unicode__(self):
         return "%s_%d_%d" % (self.user.name, self.type, self.type)
 
-
+class PreFriend(models.Model):
+    user = models.ForeignKey(User, related_name="user_prefriend_user")
+    target = models.ForeignKey(User, related_name="user_prefriend_target")
+    
+    def __unicode__(self):
+        return "%s_%s" % (user.name, target.name)

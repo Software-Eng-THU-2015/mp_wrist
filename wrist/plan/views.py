@@ -82,7 +82,10 @@ def plan_own(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    plans = user.user_plan_owner.all()[-20:]
+    ld = user.user_plan_owner.all().count()
+    if ld < 20:
+        ld = 20
+    plans = user.user_plan_owner.all()[ld-20:]
     for plan in plans:
         item = {}
         item["id"] = plan.id
@@ -116,7 +119,10 @@ def plan_square(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    plans = Plan.objects.all()[-20:]
+    ld = Plan.objects.all().count()
+    if ld < 20:
+        ld = 20
+    plans = Plan.objects.all()[ld-20:]
     for plan in plans:
         item = {}
         item["id"] = plan.id
@@ -203,6 +209,7 @@ def submit_make(request):
     else:
         file_name = tools.getDefaultImageByTag(tags)
     plan.image = file_name
+    plan.save()
     plan.members.add(user)
     i = 0
     while ("friend%d" % i) in request.POST:
@@ -297,8 +304,8 @@ def plan_profile(request):
     plan = Plan.objects.get(id=id)
     data["image"] = plan.image
     data["title"] = plan.name
-    data["startTime"] = plan.startTime
-    data["endTime"] = plan.endTime
+    data["startTime"] = basic_tools.IntToDate(plan.startTime)
+    data["endTime"] = basic_tools.IntToDate(plan.endTime)
     data["description"] = plan.description
     data["goods"] = plan.goods
     data["id"] = plan.id

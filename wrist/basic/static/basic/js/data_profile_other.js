@@ -11,16 +11,27 @@ $(".match").click(function(){
 $(".friend").click(function(){
     var node = $(this);
     var flag = 0;
-    node.toggleClass("btn-danger");
-    node.toggleClass("btn-success");
-    if(node.hasClass("btn-danger")){
-        node.html("删除好友");
-        flag = 1;
-    }
-    else{
-        node.html("加为好友");
-        flag = 0;
-    }
+    if(node.hasClass("btn-danger")) flag = 1;
     var url = domain + "/basic/add/friend?userId=" + userId + "&target=" + node.attr("userId") + "&type=" + str(flag);
-    getData(url, function(){});
+    getData(url, function(data){
+        if(data == "success"){
+            node.toggleClass("btn-danger");
+            node.toggleClass("btn-success");
+            if(node.hasClass("btn-danger")){
+                sweetAlert("操作成功","成功添加好友","success");
+                node.html("删除好友");
+            }
+            else{
+                sweetAlert("操作成功","成功删除好友","success");
+                node.html("加为好友");
+            }
+            
+        }
+        else if(data == "send"){
+            sweetAlert("操作成功","好友请求发送成功!","success");
+        }
+        else{
+            sweetAlert("出错啦","请求出错啦！","error");
+        }
+    });
 });

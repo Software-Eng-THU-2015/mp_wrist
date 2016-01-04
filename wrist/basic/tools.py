@@ -101,5 +101,5 @@ def caloriesToDis(calories, height, weight):
 def teamName(team, username):
     if not team:
         return username
-    elif:
+    else:
         return u"%s的小队" % username

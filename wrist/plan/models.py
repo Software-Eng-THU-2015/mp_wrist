@@ -27,6 +27,9 @@ class PTag(models.Model):
         return self.name
 
 class PlanProgress(models.Model):
-    user = models.ForeignKey(User, related_name="user_progress_user")
-    plan = models.ForeignKey(Plan, related_name="plan_progress_plan")
+    user = models.ForeignKey(User, related_name="user_planprogress_user")
+    plan = models.ForeignKey(Plan, related_name="plan_planprogress_plan")
     value = models.IntegerField(default=0)
+    
+    def __unicode__(self): 
+        return "%s_%s" % (user.name, plan.name)

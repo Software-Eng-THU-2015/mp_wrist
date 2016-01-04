@@ -6,7 +6,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse
 from wechat import tools as wechat_tools
-from models import User, DayData, Data, Good, Archive
+from models import User, DayData, Data, Good, Archive, PreFriend
 from plan.models import Plan
 from match.models import Match
 from match import tools as match_tools
@@ -337,7 +337,10 @@ def data_profile(request):
     data["chart_data"] = json.dumps(data["chart_data"])
     if not flag:
         data["plans"] = []
-        plans = user.user_plan_members.all()[-3:]
+        ld = user.user_plan_members.all().count()
+        if ld < 3:
+            ld = 3
+        plans = user.user_plan_members.all()[ld-3:]
         for plan in plans:
             item = {}
             item["name"] = plan.name
@@ -348,7 +351,10 @@ def data_profile(request):
                 item["tags"].append(tag.name)
             data["plans"].append(item)
         data["matchs"] = []
-        matchs = user.user_match_members.all()[-3:]
+        ld = user.user_match_members.all().count()
+        if ld < 3:
+            ld = 3
+        matchs = user.user_match_members.all()[ld-3:]
         for match in matchs:
             item = {}
             item["name"] = match.title
@@ -374,17 +380,59 @@ def friend_add(request):
         return HttpResponse("error")
     if not request.GET["userId"] == request.session["userId"]:
         return HttpResponse("error")
-    user = request.GET["userId"]
-    user = User.objects.get(openId=user)
+    result = "success"
+    userId = request.GET["userId"]
+    user = User.objects.get(openId=userId)
     id = int(request.GET["target"])
     type = int(request.GET["type"])
     if type == 0:
         target = User.objects.get(openId=id)
-        user.friends.add(target)
+        preFriend = PreFriend.objects.filter(user=target,target=user)
+        if preFriend.count() > 0:
+            user.friends.add(target)
+            target.friends.add(user)
+            preFriend.delete()
+        else:
+            url = "%s/basic/redirect/profile?page=4&id=%s" % (wechat_tools.domain, userId)
+            data = {
+              "title":{
+               "value":u"好友请求",
+               "color":"#000000",
+              },
+              "content":{
+               "value":u"%s想要加您为好友" % user.name,
+               "color":"#007fff",
+              },
+              "remark":{
+               "value":u"点击查看对方信息",
+               "color":"#666666"
+              }
+            }
+            wechat_tools.customSendTemplate(id, wechat_tools.template_id["msg"], "#000000", data, url)
+            tmp = PreFriend(user=user,target=target)
+            tmp.save()
+            result = "send"
     else:
         target = user.friend.filter(openId=id)
         user.friends.remove(target)
-    return HttpResponse("success")
+        target.friends.remove(user)
+        url = "%s/basic/redirect/profile?page=4&id=%s" % (wechat_tools.domain, userId)
+        data = {
+          "title":{
+           "value":u"取消好友",
+           "color":"#000000",
+          },
+          "content":{
+           "value":u"%s取消了好友关系" % user.name,
+           "color":"#007fff",
+          },
+          "remark":{
+           "value":u"点击查看对方信息",
+           "color":"#666666"
+          }
+        }
+        wechat_tools.customSendTemplate(id, wechat_tools.template_id["msg"], "#000000", data, url)
+    return HttpResponse(result)
 #    except:
 #        return HttpResponse("error")
 

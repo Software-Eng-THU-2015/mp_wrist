@@ -26,6 +26,9 @@ class MTag(models.Model):
         return self.name
 
 class MatchProgress(models.Model):
-    user = models.ForeignKey(User, related_name="user_progress_user")
-    match = models.ForeignKey(Match, related_name="match_progress_match")
+    user = models.ForeignKey(User, related_name="user_matchprogress_user")
+    match = models.ForeignKey(Match, related_name="match_matchprogress_match")
     value = models.IntegerField(default=0)
+    
+    def __unicode__(self):
+        return "%s_%s" % (user.name, match.title)
