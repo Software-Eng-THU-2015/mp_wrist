@@ -71,16 +71,19 @@ def submit_make(request):
     path = "/media/match/"
     if not os.path.exists(prefix+path):
         os.mkdir(prefix+path)
-    file = request.FILES["image"]
-    file_name = "%s%s_%s_%s" % (path, match.title.encode("utf-8"), str(now), file.name.encode("utf-8"))
-    des = open(prefix+file_name, "wb")
-    for chunk in file.chunks():
-        des.write(chunk)
-    des.close()
+    if "images" in request.FILES:
+        file = request.FILES["image"]
+        file_name = "%s%s_%s_%s" % (path, match.title.encode("utf-8"), str(now), file.name.encode("utf-8"))
+        des = open(prefix+file_name, "wb")
+        for chunk in file.chunks():
+            des.write(chunk)
+        des.close()
+    else:
+        file_name = "/static/img/plan_make.jpg"
     match.image = file_name
     match.save()
-    tags = request.POST["tags"]
-    for tag in tags:
+    tag = request.POST["tags"]
+    if not tag == "":
         item = MTag.objects.filter(name=tag)
         if len(item) == 0:
             item = MTag(name=tag)
@@ -88,6 +91,18 @@ def submit_make(request):
         else:
             item = item[0]
         item.matchs.add(match)
+    i = 0
+    while ("tag%d" % i) in request.POST:
+        tag = request.POST["tag%d" % i]
+        i += 1
+        if not tag == "":
+            item = MTag.objects.filter(name=tag)
+            if len(item) == 0:
+                item = MTag(name=tag)
+                item.save()
+            else:
+                item = item[0]
+            item.matchs.add(match)
     match.user_members.add(user)
     team = user.user_team_members.get(type=0)
     match.members.add(team)
