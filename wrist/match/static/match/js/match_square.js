@@ -1,5 +1,9 @@
 var userId = $("#userId").attr("userId");
 
+$(".profileLink").click(function(){
+    window.location.href = $(".link").attr("to") + "?page=3&id=" + $(this).attr("userId");
+});
+
 $('.follow.button').click(function(){
   var node = $(this);
   var URL = domain + "/match/join?userId=" + userId + "&target=" + $(this).attr("userId");
@@ -12,7 +16,8 @@ $('.follow.button').click(function(){
       var tpl = $($(".template")[1]).html();
       var template = Handlebars.compile(tpl);
       getData(URL.replace("join","list"), function(data){
-      $(".tip").html(template(data));
+      var json = eval("(" + data + ")");
+      $(".tip").html(template(json));
       $("#matchModal").modal("show");
       $("#matchModal .submit").on("click", {obj:this}, function(e){
             var val = $("input[name='team']:checked").val();
@@ -23,7 +28,7 @@ $('.follow.button').click(function(){
             $("#matchModal").modal("toggle");
             getData(URL + "&team=" + val);
       });  
-      }
+      });
   }
 });
 

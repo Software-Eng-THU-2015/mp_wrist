@@ -20,7 +20,7 @@
 </head>
 
 <body>
-    <div class="body"></div>
+    <div class="body">
    <script class="template" type="text/x-handlebars-template">
    <div class="link" to={{href}} style="display: none"></div>
    <div id="userId" userId={{userId}} style="display:none"></div>
@@ -44,7 +44,7 @@
     <div class="image">
       <img src={{image}}>
     </div>
-    <div userId={{id}} class="profileLink content">
+    <div userId={{userId}} class="profileLink content">
       <div class="header">{{title}}</div>
       <i class="calendar icon"></i>竞赛时间
       <p>{{startTime}}-{{endTime}}</p>
@@ -86,6 +86,7 @@
       <button page="2"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
     </div>
   </script>
+  <div>
   <script src="/static/js/handlebars.min.js"></script>
   <script>
         var href = window.location.href;
@@ -131,9 +132,9 @@
                    {{#team}}
                     <input type="radio" name="team" value={{id}}>{{name}}
                     <div class="teamMembers">
-                    {{#member}}
+                    {{#members}}
                       <img class="ui avatar image" src={{image}}>{{name}}&nbsp &nbsp
-                    {{/member}}
+                    {{/members}}
                     </div>
                    {{/team}}
                    <input type="radio" name="team" value="-1">自己组队

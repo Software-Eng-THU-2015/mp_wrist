@@ -17,10 +17,11 @@
 </head>
 
 <body>
+   <div class="body">
    <script class="template" type="text/x-handlebars-template">
    <div class="link" to={{href}} style="display: none"></div>
    <div id="userId" userId={{userId}} style="display:none"></div>
-   <div class="data" page="2" style="display: none"></div>
+   <div class="data" page="3" style="display: none"></div>
 	<!-- Page container -->
   <a class="ui top attached gray label">
 	 <div class="ui large horizontal statistic">
@@ -83,38 +84,72 @@
   <script src="/static/js/bootstrap.min.js"></script>
   <script src="/static/js/footer.js"></script>
   </script>
-  <script class="template" type="x-handlebars-template">
-  <p>请选择一个队伍加入，如不选择则认为是自己建立队伍参赛</p>
-  <ul class="list-group">
-    {{#data_list}}
-        <li class="list-group-item list-group-item-text"><span class="badge">{{num}}</span>{{name}}</li>
-        <li class="group-info">
-          <div class="row">
-          {{#members}}
-            <div class="col-xs-4">
-              <div class="thumbnail"><img src={{image}} alt="Thumbnail Image 1">
-                <div class="caption" teamId={{teamId}}>
-                  <h3>{{name}}</h3>
-                </div>
-              </div>
-            </div>
-          {{/members}}
-          </div>
-        </li>
-    {{/data_list}}
-    <button id="join">加入</button>
-    <button id="cancel">取消</button>
-  </ul>
-  </script>
+  </div>
   <script src="/static/js/handlebars.min.js"></script>
   <script>
-        var tpl = $(".template")[0].html();
+        var href = window.location.href;
+        var pos1 = href.indexOf('?');
+        var pos2 = href.indexOf('&');
+        var userId = href.substr(pos2+1);
+        var id = href.substr(pos1+1,pos2-pos1-1);
+        var tpl = $($(".template")[0]).html();
         var template = Handlebars.compile(tpl);
-        var url = domain + "/data/match/square";
+        var url = domain + "/match/data/profile?userId=" + userId + "&id=" + id;
         getData(url, function(data){
             var json = eval("(" + data + ")");
-            $("body").html(template(json));
+            if(json.error){
+                $("body").html("");
+                yepnope({
+                    test:true,
+                    yep:["/static/js/sweetalert.min.js","/static/css/sweetalert.css"],
+                    complete:function(){
+                        sweetAlert(json.error.title,json.error.content,"error");
+                    }
+                });
+            }
+            else{
+            $(".body").html(template(json));
+            $(".box").height($(".foot").height());
+            yepnope({
+                test: true,
+                yep: ["/static/plan/js/match_square.js", "/static/js/footer.js"]
+            });
+            }
         });
+  </script>
+ <script class="template" type="text/x-handlebars-template">
+    <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss=
+                    "modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="matchModalLabel">
+                        选择你的队伍
+                    </h4>
+                </div>
+                <div class="modal-body">
+                   {{#team}}
+                    <input type="radio" name="team" value={{id}}>{{name}}
+                    <div class="teamMembers">
+                    {{#members}}
+                      <img class="ui avatar image" src={{image}}>{{name}}&nbsp &nbsp
+                    {{/members}}
+                    </div>
+                   {{/team}}
+                   <input type="radio" name="team" value="-1">自己组队
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="submit btn btn-primary">
+                        确认
+                    </button>
+                </div>
+           </div>
+       </div>
+    </div>
   </script>
 </body>
 </html>

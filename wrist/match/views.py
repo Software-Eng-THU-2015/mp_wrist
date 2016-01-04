@@ -2,7 +2,6 @@
 
 import random
 import json
-import time
 import os
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
@@ -66,10 +65,9 @@ def match_make(request):
 def submit_make(request):
     userId = request.POST["userId"]
     user = User.objects.get(openId=userId)
-    now = int(time.time())
-    match = Match(title=request.POST["match_name"],description=request.POST["comment"],createTime=now,startTime="%s:00" % request.POST["begintime"],endTime="%s:00" % request.POST["endtime"],creator=user)
-    match.endDate, match.endDateTime = basic_tools.splitDate(match.endTime)
-    prefix = "/data/www/wrist"
+    now = basic_tools.getNow()
+    match = Match(title=request.POST["match_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13]),endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),creator=user)
+    prefix = os.environ.get("WRIST_HOME")
     path = "/media/match/"
     if not os.path.exists(prefix+path):
         os.mkdir(prefix+path)
@@ -81,7 +79,7 @@ def submit_make(request):
     des.close()
     match.image = file_name
     match.save()
-    tags = request.POST["tags"].split("|")
+    tags = request.POST["tags"]
     for tag in tags:
         item = MTag.objects.filter(name=tag)
         if len(item) == 0:
@@ -90,7 +88,7 @@ def submit_make(request):
         else:
             item = item[0]
         item.matchs.add(match)
-    return HttpResponseRedirect("/match/redirect?page=3")
+    return HttpResponseRedirect("/match/redirect?page=3&id=%d" % match.id)
 
 def match_square(request):
     if not "userId" in request.session:
@@ -104,16 +102,6 @@ def match_square(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    teams = Team.objects.all()
-    data["teams"] = []
-    for team in teams:
-        item = {}
-        item["name"] = team.name
-        item["members"] = []
-        members = team.members.all()
-        for member in members:
-            item["members"].append({"image":member.image,"name":member.name})
-        data["teams"].append(item)
     matchs = Match.objects.all()[:20]
     for match in matchs:
         item = {}
@@ -147,19 +135,18 @@ def match_check(request):
     if not "userId" in request.GET:
         data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
-    if not request.GET["userId"] == request.session["userId"]:
-        data = {"error":{"title":u"权限不足","content":u"你无法查看别人的比赛"}}
-        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
     data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    matchs = user.user_match_creator.all()
+    teams = Team.objects.all()
+    matchs = user.user_match_members.all()[:20]
     for match in matchs:
         item = {}
         item["user_image"] = match.creator.image
         item["user_name"] = match.creator.name
+        item["userId"] = match.id
         item["createTime"] = basic_tools.getCreateTime(match.createTime)
         item["title"] = match.title
         item["description"] = match.description
@@ -192,40 +179,24 @@ def match_profile(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    teams = Team.objects.all()
-    data["teams"] = []
-    for team in teams:
-        item = {}
-        item["name"] = team.name
-        item["members"] = []
-        members = team.members.all()
-        for member in members:
-            item["members"].append({"image":member.image,"name":member.name})
-        data["teams"].append(item)
-    matchs = Match.objects.all()[:20]
-    for match in matchs:
-        item = {}
-        item["user_image"] = match.creator.image
-        item["user_name"] = match.creator.name
-        item["userId"] = match.id
-        item["createTime"] = basic_tools.getCreateTime(match.createTime)
-        item["title"] = match.title
-        item["description"] = match.description
-        item["image"] = match.image
-        if match.finished == 1:
-            item["isFinished"] = 1
-        item["tags"] = []
-        tags = match.match_mtag_matchs.all()
-        for tag in tags:
-            item["tags"].append(tag.name)
-        teams = match.members.all()
-        for team in teams:
-            tmp = team.members.filter(openId=userId)
-            if len(tmp) > 0:
-                item["isFollow"] = 1
-                break
-        data["data_list"].append(item)
-    data["data_list"].reverse()
+    id = request.GET["id"]
+    match = Match.objects.get(id=id)
+    data["user_image"] = match.creator.image
+    data["user_name"] = match.creator.name
+    data["userId"] = match.id
+    data["createTime"] = basic_tools.getCreateTime(match.createTime)
+    data["title"] = match.title
+    data["description"] = match.description
+    data["image"] = match.image
+    if match.finished == 1:
+        data["isFinished"] = 1
+    data["tags"] = []
+    tags = match.match_mtag_matchs.all()
+    for tag in tags:
+        data["tags"].append(tag.name)
+    tmp = match.user_members.filter(openId=userId)
+    if len(tmp) > 0:
+        data["isFollow"] = 1
     return HttpResponse(json.dumps(data), content_type="application/json")
     
 def match_join(request):
@@ -233,7 +204,7 @@ def match_join(request):
         return HttpResponse("error")
     if not "userId" in request.GET:
         return HttpResponse("error")
-    matchId = int(request.GET["id"])
+    matchId = int(request.GET["target"])
     match = Match.objects.get(id=matchId)
     userId = request.GET["userId"]
     user = User.objects.get(openId=userId)

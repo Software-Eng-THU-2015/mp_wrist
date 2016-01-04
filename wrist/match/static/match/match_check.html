@@ -21,6 +21,7 @@
 </head>
 
 <body>
+    <div class="body">
     <script class="template" type="text/x-handlebars-template">
     <div class="link" to={{href}} style="display: none"></div>
     <div id="userId" userId={{userId}} style="display: none"></div>
@@ -77,6 +78,7 @@
   </div>
   {{/data_list}}
   </div>
+  <div class="tip"></div>
   <div class="box"></div>
     <div class="foot">
       <button page="1"><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
@@ -84,11 +86,12 @@
       <button page="3"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
     </div>
   </script>
+  </div>
   <script src="/static/js/handlebars.min.js"></script>
   <script>
        var href = window.location.href;
         var userId = href.substr(href.indexOf('?')+1);
-        var tpl = $(".template").html();
+        var tpl = $($(".template")[0]).html();
         var template = Handlebars.compile(tpl);
         var url = domain + "/match/data/check?userId=" + userId;
         getData(url, function(data){
@@ -108,11 +111,44 @@
             $(".box").height($(".foot").height());
             yepnope({
                 test: true,
-                yep: ["/static/match/js/match_check.js", "/static/js/footer.js"]
+                yep: ["/static/match/js/match_square.js", "/static/js/footer.js"]
             });
             }
         });
   </script>
-
+ <script class="template" type="text/x-handlebars-template">
+    <div class="modal fade" id="matchModal" tabindex="-1" role="dialog" aria-labelledby="matchModelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss=
+                    "modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="matchModalLabel">
+                        选择你的队伍
+                    </h4>
+                </div>
+                <div class="modal-body">
+                   {{#team}}
+                    <input type="radio" name="team" value={{id}}>{{name}}
+                    <div class="teamMembers">
+                    {{#members}}
+                      <img class="ui avatar image" src={{image}}>{{name}}&nbsp &nbsp
+                    {{/members}}
+                    </div>
+                   {{/team}}
+                   <input type="radio" name="team" value="-1">自己组队
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="submit btn btn-primary">
+                        确认
+                    </button>
+                </div>
+           </div>
+       </div>
+    </div>
+  </script>
 </body>
 </html>
