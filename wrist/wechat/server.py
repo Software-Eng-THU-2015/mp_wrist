@@ -69,7 +69,7 @@ def subEvent(msg):
             user = users[0]
         else:
             user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source)
-            team = Team(name=basic_tools.getTeamName,type=0)
+            team = Team(name=basic_tools.getTeamName(None, username),type=0)
             team.save()
             team.members.add(user)
         user.name = username
@@ -223,7 +223,7 @@ def clickEvent(msg):
         articles.append({"title":u"创建比赛","description":u"开始一场新的比赛吧！","image":"%s/static/img/match_make.jpg" % tools.domain,"url":"%s/match/redirect/profile?page=0" % tools.domain})
         reply = ArticlesReply(articles=articles, message=msg)
     elif msg.key == "V1001_MATCH_CHECK":    #我的比赛进度查看
-        closest_match = match_tools.closest_match(now)
+        closest_match = match_tools.closest_match(user, now)
         if not closest_match:   #没有未结束的比赛
             data = {
                 "title":{
@@ -243,7 +243,7 @@ def clickEvent(msg):
             tools.customSendTemplate(msg.source, tools.template_id["msg"], "#000000", data, url)
         else:   #返回最近的比赛的进度
             left_time = basic_tools.left_time(now, closest_match.endtime)
-            steps = match_tools.steps_sum(closest_match)
+            steps = match_tools.getProgress(closest_match, user)
             data = {
                 "object":{
                     "value": u"%s 比赛" % closest_match.title,

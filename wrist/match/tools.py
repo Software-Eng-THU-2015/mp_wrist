@@ -1,20 +1,15 @@
 #-*- coding=utf-8 -*-
 
 from basic.models import User, Team
-from match.models import Match
+from match.models import Match, MatchProgress
 from wechat import tools as wechat_tools
 
-def closest_match(now):
-    pass
-    
-def steps_sum(match):
-    pass
-    
-def getAllMatch(user):
-    return []
-    
-def getDefaultImageByTag(tags):
-    return "/static/img/match_make.jpg"
+def closest_match(user, now):
+    match = user.user_match_members.order_by('endTime').filter(finished=0)
+    if match.count() > 0:
+        return match[0]
+    else:
+        return None
     
 def findTeam(match, user):
     teams = match.members.all()
@@ -23,6 +18,23 @@ def findTeam(match, user):
         if team.members.filter(openId=userId).exists():
             return team
     return None
+    
+def getSingleProgress(match, user):
+    progress = MatchProgress.objects.filter(match=match,user=user)
+    if progress.count() == 0:
+        return 0
+    else:
+        return progress[0].value
+    
+def getProgress(match, user):
+    team = findTeam(match, user)
+    members = team.members.all()
+    result = 0
+    for member in members:
+        result += getSingleProgress(match, member)
+    
+def getDefaultImageByTag(tags):
+    return "/static/img/match_make.jpg"
     
 def sendInvite(user, id, friendId, type):
     url = "%s/match/redirect/profile?page=3&id=%d" % (wechat_tools.domain, id)

@@ -6,15 +6,8 @@
     <link rel="stylesheet" href="/static/css/semantic.min.css" />
     <link rel="stylesheet" href="/static/css/typicons.min.css" />
     <link rel="stylesheet" href="/static/css/footer.css" />
+    <link rel="stylesheet" href="/static/plan/css/plan_square.css" />
 	<title>计划广场</title>
-	<style type="text/css">
-	#rankTable {
-		position: absolute;
-		left: 0;
-		right: 0;
-		width: 100%;
-	}
-	</style>
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/base.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
@@ -31,70 +24,52 @@
 	<a class="ui top attached rad label">
 	 <div class="ui large horizontal statistic">
 	 <div class="text value">
-       plan
+       Square
      </div>
      </div>
 	 </a>
-    <br><br>
-  <div class="ui divided items">
+    <br><br><br>
+  <div class="ui link centered cards">
   {{#data_list}}
-    {{#if isFinished}}
-    <div class="ui segment" style="background-color: #cccccc">
-    {{else}}
-    <div class="ui segment">
-    {{/if}}
-      <div class="ui large feed">
-      <div class="event">
-        <img src={{user_image}} class="ui avatar image">
-      <div class="content">
-        <div class="summary">
-          <a class="user">
-              {{user_name}}
-            </a>
-          <div class="date">
-            {{createTime}}
-          </div>
-        </div>
-      </div>
+  {{#if isFinished}}
+  <div class="card" style="background-color: #cccccc">
+  {{else}}
+  <div class="card">
+  {{/if}}
+    <div class="content">
+    <img class="ui avatar image" src={{user_image}}> {{user_name}}
     </div>
-    </div>
-    <div class="profileLink" userId={{id}}>
-    <h3 class="ui header">
-      {{title}}
-    </h3>
-    <div class="ui small images">
+    <div class="image">
       <img src={{image}}>
     </div>
-    <div class="extra text">
-      {{description}}
+    <div class="profileLink content" userId={{id}}>
+      <div class="header">{{title}}</div>
+      <div class="meta">
+        <a>{{description}}</a>
+      </div>
+      <div class="description">
+      {{#each tags}}
+        <div class="ui label">{{this}}</div>
+      {{/each}}
+      </div>
     </div>
+    <div class="extra content">
+      <span class="right floated">
+      {{#if isFollow}}
+        <button class="ui follow button" userId={{id}}>
+          <i class="paw icon"></i>Following 
+        </button>
+      {{else}}
+        <button class="ui follow button" userId={{id}}>
+            <i class="paw icon"></i>&nbsp&nbsp&nbsp&nbspFollow&nbsp&nbsp&nbsp
+		</button>
+      {{/if}}
+      </span>
+      <span>
+        <i class="user icon"></i>
+        {{goods}} people
+      </span>
     </div>
-    <p></p>
-    <div class="extra">
-    {{#each tags}}
-      <div class="ui label">{{this}}</div>
-    {{/each}}
-    </p>
-    <div class="ui two bottom attached buttons">
-    {{#if isGood}}
-    <div class="red ui like button" userId={{id}}>
-    {{else}}
-    <div class="ui like button" userId={{id}}>
-    {{/if}}
-      <i class="heart icon"></i>
-      Like
-    </div>
-    {{#if isFollow}}
-    <div class="ui blue follow button" userId={{id}}>
-      <i class="paw icon"></i>Following
-    </div>
-    {{else}}
-    <div class="ui follow button" userId={{id}}>
-    <i class="paw icon"></i>Follow
-    </div>
-    {{/if}}
-    </div>
-  </div>
   </div>
   {{/data_list}}
   </div>

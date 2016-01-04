@@ -12,10 +12,14 @@ $('.heart.icon').click(function(){
     xhr.send(null);
 });
 
+$(".profileLink").click(function(){
+   window.location.href = $(".link").attr("to") + "?page=4&id=" + $(this).attr("userId"); 
+});
+
 $('.ui.progress').progress('reset');
 
 var numberOne = parseInt($("#step1").html());
-var num = $(".ui .indicating .progress").length;
+var num = $(".ui.indicating.progress").length;
 for(var i = 0;i < num;i++)
 {
     $("#user" + (i+1)).progress({

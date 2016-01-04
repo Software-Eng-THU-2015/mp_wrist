@@ -83,6 +83,10 @@ input {
     font-size: 3rem;
 }
 
+#plans .plan, #matchs .match {
+    font-size: 2.5rem;
+}
+
 .archives {
     background-color: #ff7c7c;
 }
@@ -96,7 +100,7 @@ input {
 }
 
 .ui.label {
-    font-size: 2.5rem;
+    font-size: 2rem;
 }
 
 .ui-mobile [data-role=page], .ui-mobile [data-role=dialog], .ui-page{
@@ -115,10 +119,14 @@ input {
     top:0;
 }
 
-input {
-    background-color: #e5e5e5
-}
-
 .friend {
     width: 100%
+}
+
+.plan {
+    border: 1px solid blue;
+}
+
+.match {
+    border: 1px solid green;
 }

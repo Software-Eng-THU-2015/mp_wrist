@@ -18,8 +18,8 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/base.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
-    <script src="/static/js/semantic.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/semantic.min.js"></script>
 </head>
 
 <body>
@@ -50,6 +50,12 @@
      {{#if goal}}
      <i class="write square icon"></i>计划目标
      <p>{{goal}}步</p>
+     <i class="write square icon"></i>计划进度
+     <div total={{goal}} value={{progress_value}} class="ui indicating progress">
+        <div class="bar">
+            <div class="progress"></div>  <!-- Show percentage -->
+        </div>
+     </div>
      {{/if}}
 	 <i class="flag icon"></i>TAG
 	 <div class="description">
@@ -57,10 +63,8 @@
         <div class="ui label">{{this}}</div>
      {{/each}}
       </div>
-     <div class="good">
-        <span>
-            <i class="user icon"></i>{{goods}} people
-        </span>
+    <div class="extra content">
+      <span class="right floated">
         {{#if isGood}}
         <div class="red ui like button" userId={{id}}>
         {{else}}
@@ -69,8 +73,12 @@
           <i class="heart icon"></i>
           Like
         </div>
-     </div>
-     </div>
+      </span>
+      <span>
+        <i class="user icon"></i>
+        {{goods}} people
+      </span>
+    </div>
      {{#if isFollow}}
     <button type="button" userId={{id}} class="follow button btn btn-danger btn-lg" style="width:100%">取消计划</button>
     {{else}}

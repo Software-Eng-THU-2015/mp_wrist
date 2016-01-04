@@ -62,24 +62,44 @@ def DateToInt(date):
     return int(time.mktime(timeA))
     
 def left_time(now, endtime):
-    pass
+    left = endtime - now
+    sec = left % 60
+    min = left % 3600 / 60
+    hour = left % 86400 / 3600
+    day = left / 86400
+    if day > 0:
+        return u"%d天%d小时%d分%d秒" % (day, hour, min, sec)
+    elif hour > 0:
+        return u"%d小时%d分%d秒" % (hour, min, sec)
+    elif min > 0:
+        return u"%d分%d秒" % (min, sec)
+    else:
+        return u"%d秒" % sec
 
 def getCreateTime(createTime):
-    return "1 Hour Ago"
-    now = getDateTime()
-    t1,t2 = splitDate(str(now))
-#    t3,t4 = splitDate(createTime)
-    t3,t4 = 10001,1000
-    h1 = t2 / 10000
-    h2 = t4 / 10000
-    return "%d Hours Ago" % (h1-h2)
-    
-def today_Calories(user):
-    dayData = DayData.objects.get(user=user,date=getDate())
-    return dayData.calories
+    now = getNow()
+    left = now - createTime
+    sec = left % 60
+    min = left % 3600 / 60
+    hour = left % 86400 / 3600
+    day = left / 86400
+    if day > 0:
+        return u"%d 天前" % day
+    elif hour > 0:
+        return u"%d 小时前" % hour
+    elif min > 0:
+        return u"%d 分前" % min
+    else:
+        return u"%d 秒前" % sec
 
 def caloriesToStep(calories, height, weight):
     return calories
+    
+def caloriesToDis(calories, height, weight):
+    return calories
 
-def teamName(team, user):
-    return user.name
+def teamName(team, username):
+    if not team:
+        return username
+    elif:
+        return u"%s的小队" % username

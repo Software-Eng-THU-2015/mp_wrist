@@ -136,7 +136,7 @@
                 <h1>健康报告</h1>
                 </div>
                 <div data-role="content">
-                <h1>{{report}}</h1>
+                <h1>{{../report}}</h1>
                 </div>
                 <div data-role="footer">
                 </div>
@@ -144,9 +144,9 @@
         {{/data_report}}
         </div>
         {{#if isFriend}}
-        <button class="friend" userId={{id}} type="button" class="btn btn-danger btn-lg">删除好友</button>
+        <button class="friend btn btn-lg btn-danger" userId={{id}} type="button">删除好友</button>
         {{else}}
-        <button class="friend" userId={{id}} type="button" class="btn btn-success btn-lg">加为好友</button>
+        <button class="friend btn btn-lg btn-success" userId={{id}} type="button">加为好友</button>
         {{/if}}
         <div class="box"></div>
         <div class="foot">

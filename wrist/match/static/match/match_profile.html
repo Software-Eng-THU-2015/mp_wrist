@@ -9,7 +9,7 @@
 	<title>比赛说明</title>
 	<style type="text/css">
 	 body {
-	   background-color:#DADADA;
+	   background-color:#1B1C1D;
 	 }
 	</style>
     <script src="/static/js/jquery.min.js"></script>
@@ -40,11 +40,20 @@
 	 <div class="ui inverted segment">
 	 <h2 class="ui header">
      {{title}}
+     {{#if isFinished}}
+     <span style="color:red;font-size:0.8rem;">已结束</span>
+     {{else}}
+     <span style="color:red;font-size:0.8rem;">正在进行中</span>
+     {{/if}}
      </h2>
 	 <i class="calendar icon"></i>竞赛时间
 	 <p>{{startTime}} - {{endTime}}</p>
 	 <i class="write square icon"></i>竞赛说明
      <p>{{description}}</p>
+     {{#if isFollow}}
+     <i class="write square icon"></i>当前进度
+     <p>{{step}}步</p>
+     {{/if}}
 	 <i class="flag icon"></i>TAG
 	 <div class="description">
      {{#each tags}}
@@ -65,7 +74,7 @@
               <div class="thumbnail"><img src={{image}} alt="Thumbnail Image 1">
                 <div class="caption">
                   <h3>{{name}}</h3>
-                  <p>{{消耗}}<span id="step1">{{calories}}</span>千卡</p>
+                  <p>行走<span id="step1">{{step}}</span>步</p>
                 </div>
               </div>
             </div>

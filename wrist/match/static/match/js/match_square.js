@@ -8,7 +8,10 @@ $('.follow.button').click(function(){
   var node = $(this);
   var URL = domain + "/match/join?userId=" + userId + "&target=" + $(this).attr("userId");
   if(node.hasClass('blue')){
-      getData(URL, function(){});
+      getData(URL, function(data){
+          if(data == "delete")
+              $(this.parentNode.parentNode.parentNode).css({"display":"none"});
+      });
       $(this).html('<i class="paw icon"></i>&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp');
       node.toggleClass('blue');
   }

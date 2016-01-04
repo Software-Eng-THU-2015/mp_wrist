@@ -1,5 +1,6 @@
 #-*- coding:utf-8 -*-
 
+import os
 import random
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -233,11 +234,10 @@ def data_profile(request):
     for archive in archives:
         data["archives"].append(archive.name)
     data["data_report"] = [
-    {"period":[{"type_text":u"日步数","nav_step":True,"type":"Days"},{"type_text":u"周步数","nav_step":True,"type":"Weeks"},{"type_text":u"月步数","nav_step":True,"type":"Months"}],
-    "type":"Step","num":1},
-    {"period":[{"type_text":u"日热量","nav_calories":True,"type":"Days"},{"type_text":u"周热量","nav_calories":True,"type":"Weeks"},{"type_text":u"月热量","nav_calories":True,"type":"Months"}],"type":"Cal","num":2},
-    {"period":[{"type_text":u"日距离","nav_distance":True,"type":"Days"},{"type_text":u"周距离","nav_distance":True,"type":"Weeks"},{"type_text":u"月距离","nav_distance":True,"type":"Months"}],"type":"Dis","num":3},
-    {"period":[{"type_text":u"日睡眠","nav_sleep":True,"type":"Days"},{"type_text":u"周睡眠","nav_sleep":True,"type":"Weeks"},{"type_text":u"月睡眠","nav_sleep":True,"type":"Months"}],"type":"Sleep","num":4},
+    {"period":[{"type_text":u"日步数","nav_step":True,"type":"Days","nav_day":True},{"type_text":u"周步数","nav_step":True,"type":"Weeks","nav_week":True},{"type_text":u"月步数","nav_step":True,"type":"Months","nav_month":True}],"type":"Step","num":1},
+    {"period":[{"type_text":u"日热量","nav_calories":True,"type":"Days","nav_day":True},{"type_text":u"周热量","nav_calories":True,"type":"Weeks","nav_week":True},{"type_text":u"月热量","nav_calories":True,"type":"Months","nav_month":True}],"type":"Cal","num":2},
+    {"period":[{"type_text":u"日距离","nav_distance":True,"type":"Days","nav_day":True},{"type_text":u"周距离","nav_distance":True,"type":"Weeks","nav_week":True},{"type_text":u"月距离","nav_distance":True,"type":"Months","nav_month":True}],"type":"Dis","num":3},
+    {"period":[{"type_text":u"日睡眠","nav_sleep":True,"type":"Days","nav_day":True},{"type_text":u"周睡眠","nav_sleep":True,"type":"Weeks","nav_week":True},{"type_text":u"月睡眠","nav_sleep":True,"type":"Months","nav_month":True}],"type":"Sleep","num":4},
     ]
     data["report"] = user.comment
     data["chart_data"] = {"day":[],"week":[],"month":[]}
@@ -337,7 +337,7 @@ def data_profile(request):
     data["chart_data"] = json.dumps(data["chart_data"])
     if not flag:
         data["plans"] = []
-        plans = user.user_plan_members.all()
+        plans = user.user_plan_members.all()[-3:]
         for plan in plans:
             item = {}
             item["name"] = plan.name
@@ -348,7 +348,7 @@ def data_profile(request):
                 item["tags"].append(tag.name)
             data["plans"].append(item)
         data["matchs"] = []
-        matchs = match_tools.getAllMatch(user)
+        matchs = user.user_match_members.all()[-3:]
         for match in matchs:
             item = {}
             item["name"] = match.title

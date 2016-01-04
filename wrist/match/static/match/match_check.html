@@ -6,13 +6,8 @@
     <link rel="stylesheet" href="/static/css/semantic.min.css" />
     <link rel="stylesheet" href="/static/css/typicons.min.css" />
     <link rel="stylesheet" href="/static/css/footer.css" />
-    <link rel="stylesheet" href="/static/match/css/match_check.css">
+    <link rel="stylesheet" href="/static/match/css/match_square.css">
 	<title>比赛进度</title>
-	<style type="text/css">
-	 body {
-	   background-color:#1B1C1D;
-	 }
-	</style>
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/base.js"></script>
     <script src="/static/js/yepnope.min.js"></script>
@@ -27,10 +22,10 @@
     <div id="userId" userId={{userId}} style="display: none"></div>
     <div class="data" page="1" style="display: none"></div>
 	<!-- Page container -->
-  <a class="ui top attached gray label">
+   <a class="ui top attached gray label">
 	 <div class="ui large horizontal statistic">
 	 <div class="text value">
-       mine
+       MINE
      </div>
      </div>
 	 </a>
@@ -45,12 +40,14 @@
     <div class="image">
       <img src={{image}}>
     </div>
-    <div class="content">
+    <div class="profileLink content" userId={{userId}}>
       <div class="header">{{title}}</div>
       <i class="calendar icon"></i>竞赛时间
       <p>{{startTime}}-{{endTime}}</p>
       <i class="write square icon"></i>竞赛说明
       <p>{{description}}</p>
+      <i class="write square icon"></i>当前进度
+      <p>{{step}}步</p>
       <div class="description">
       {{#each tags}}
         <div class="ui label">{{this}}</div>
@@ -60,12 +57,12 @@
     <div class="extra content">
       <span class="right floated">
       {{#if isFollow}}
-        <button class="ui blue follow button">
+        <button userId={{userId}} class="ui blue follow button">
             <i class="paw icon"></i>
             Joined
 		</button>
       {{else}}
-        <button class="ui follow button">
+        <button userId={{userId}} class="ui follow button">
             <i class="paw icon"></i>
             &nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp
 		</button>

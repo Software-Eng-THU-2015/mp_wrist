@@ -1,11 +1,15 @@
 #-*- coding=utf-8 -*-
 
 from basic.models import User
-from plan.models import Plan
+from plan.models import Plan, PlanProgress
 from wechat import tools as wechat_tools
 
-def getCreateTime(createTime):
-    return createTime
+def getProgress(plan, user):
+    progress = PlanProgress.objects.filter(plan=plan,user=user)
+    if progress.count() == 0:
+        return 0
+    else:
+        return progress[0].value
 
 def getDefaultImageByTag(tags):
     return "/static/img/plan_make.jpg"

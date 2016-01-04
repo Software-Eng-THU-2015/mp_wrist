@@ -158,12 +158,11 @@ def match_square(request):
         tags = match.match_mtag_matchs.all()
         for tag in tags:
             item["tags"].append(tag.name)
-        teams = match.members.all()
-        for team in teams:
-            tmp = team.members.filter(openId=userId)
-            if len(tmp) > 0:
-                item["isFollow"] = 1
-                break
+        item["follow"] = match.user_members.all().count()
+        tmp = match.user_members.filter(openId=userId).count()
+        if tmp > 0:
+            item["isFollow"] = 1
+            break
         data["data_list"].append(item)
     data["data_list"].reverse()
     return HttpResponse(json.dumps(data), content_type="application/json")
@@ -182,8 +181,7 @@ def match_check(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    teams = Team.objects.all()
-    matchs = user.user_match_members.all()[:20]
+    matchs = user.user_match_members.order_by("-endTime").filter(finished=0).all()[:20]
     for match in matchs:
         item = {}
         item["user_image"] = match.creator.image
@@ -193,20 +191,14 @@ def match_check(request):
         item["title"] = match.title
         item["description"] = match.description
         item["image"] = match.image
-        if match.finished == 1:
-            item["isFinished"] = 1
+        item["step"] = tools.getProgress(match, user)
         item["tags"] = []
         tags = match.match_mtag_matchs.all()
         for tag in tags:
             item["tags"].append(tag.name)
-        teams = match.members.all()
-        for team in teams:
-            tmp = team.members.filter(openId=userId)
-            if len(tmp) > 0:
-                item["isFollow"] = 1
-                break
+        item["isFollow"] = 1
+        item["follow"] = match.user_members.all().count()
         data["data_list"].append(item)
-    data["data_list"].reverse()
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 def match_profile(request):
@@ -222,25 +214,47 @@ def match_profile(request):
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
     data["href"] = "%s/match/redirect/profile" % wechat_tools.domain
-    data["data_list"] = []
     id = request.GET["id"]
     match = Match.objects.get(id=id)
-    data["user_image"] = match.creator.image
-    data["user_name"] = match.creator.name
-    data["userId"] = match.id
-    data["createTime"] = basic_tools.getCreateTime(match.createTime)
+    data["id"] = match.id
     data["title"] = match.title
     data["description"] = match.description
     data["image"] = match.image
+    data["startTime"] = match.startTime
+    data["endTime"] = match.endTime
     if match.finished == 1:
         data["isFinished"] = 1
     data["tags"] = []
     tags = match.match_mtag_matchs.all()
     for tag in tags:
         data["tags"].append(tag.name)
-    tmp = match.user_members.filter(openId=userId)
-    if len(tmp) > 0:
+    tmp = match.user_members.filter(openId=userId).count()
+    if tmp > 0:
         data["isFollow"] = 1
+        data["step"] = tools.getProgress(match, user)
+    data["data_list"] = []
+    teams = match.members.all()
+    for team in teams:
+        item = {}
+        item["num"] = 0
+        item["name"] = team.name
+        item["members"] = []
+        steps = 0
+        members = team.members.all()
+        for member in members:
+            step = tools.getSingleProgress(match, member)
+            steps += step
+            item["members"].append({
+                "image":member.image,
+                "name":member.name,
+                "step":step
+                })
+        item["step"] = steps
+        data["data_list"].append(item)
+    data["data_list"] = sorted(data["data_list"], key=lambda item : item["step"], reverse=True)
+    ld = len(data["data_list"])
+    for i in xrange(ld):
+        data["data_list"][i]["num"] = i+1
     return HttpResponse(json.dumps(data), content_type="application/json")
     
 def match_join(request):
@@ -250,6 +264,7 @@ def match_join(request):
         return HttpResponse("error")
     if not "userId" in request.GET:
         return HttpResponse("error")
+    result = "success"
     matchId = int(request.GET["target"])
     match = Match.objects.get(id=matchId)
     userId = request.GET["userId"]
@@ -261,9 +276,11 @@ def match_join(request):
             match.members.remove(team)
         else:
             team.members.remove(user)
-        if len(match.user_members.all()) == 0:
+        if match.user_members.all().count() == 0:
             match.delete()
+            result = "delete"
     else:
+        match.user_members.add(user)
         teamId = int(request.GET["team"])
         if teamId == -1:
             team = user.user_team_members.get(type=0)
@@ -271,11 +288,13 @@ def match_join(request):
         else:
             team = Team.objects.get(id=teamId)
             if team.type == 0:
+                match.members.remove(team)
                 member = team.members.all()[0]
-                team = Team(name=basic_tools.teamName(team,user),type=1)
+                team = Team(name=basic_tools.teamName(team,user.name),type=1)
                 team.members.add(member)
+                match.members.add(team)
             team.members.add(user)
-    return HttpResponse("success")
+    return HttpResponse(result)
         
 def match_list(request):
     if os.environ.get("TEST", None):
@@ -298,7 +317,7 @@ def match_list(request):
         item["name"] = team.name
         item["id"] = team.id
         item["members"] = []
-        members = team.members.all()
+        members = team.members.all()[:3]
         for member in members:
             item["members"].append({"name":member.name,"image":member.image})
         data["team"].append(item)

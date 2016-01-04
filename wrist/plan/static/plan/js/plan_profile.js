@@ -17,3 +17,12 @@ $('.like.button').click(function(){
    var URL = domain + "/basic/goods?type=1&user=" + userId + "&target=" + $(this).attr("userId");
    getData(URL, function(){});
 });
+
+var node = $(".ui.progress");
+
+node.progress("reset");
+
+node.progress({
+    total: parseInt(node.attr("total")),
+    value: parseInt(node.attr("value"))
+});

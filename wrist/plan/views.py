@@ -10,7 +10,7 @@ from django.template import RequestContext
 from basic.models import User, Good
 from basic import tools as basic_tools
 from wechat import tools as wechat_tools
-from models import Plan, PTag
+from models import Plan, PTag, PlanProgress
 import tools
 
 # Create your views here.
@@ -63,6 +63,7 @@ def plan_make(request):
         item = {}
         item["name"] = friend.name
         item["image"] = friend.image
+        item["userId"] = friend.openId
         data["friends"].append(item)
     return HttpResponse(json.dumps(data), content_type="application/json")
   
@@ -81,7 +82,7 @@ def plan_own(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    plans = user.user_plan_owner.all()[:20]
+    plans = user.user_plan_owner.all()[-20:]
     for plan in plans:
         item = {}
         item["id"] = plan.id
@@ -89,13 +90,11 @@ def plan_own(request):
         item["title"] = plan.name
         item["description"] = plan.description
         item["image"] = plan.image
+        item["goods"] = plan.goods
         item["tags"] = []
         tags = plan.plan_ptag_plans.all()
         for tag in tags:
             item["tags"].append(tag.name)
-        tmp = Good.objects.filter(user=user,type=1,target=plan.id)
-        if len(tmp) > 0:
-            item["isGood"] = 1
         item["isFollow"] = 1
         if plan.finished == 1:
             item["isFinished"] = 1
@@ -117,7 +116,7 @@ def plan_square(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    plans = Plan.objects.all()[:20]
+    plans = Plan.objects.all()[-20:]
     for plan in plans:
         item = {}
         item["id"] = plan.id
@@ -127,15 +126,13 @@ def plan_square(request):
         item["title"] = plan.name
         item["description"] = plan.description
         item["image"] = plan.image
+        item["goods"] = plan.goods
         item["tags"] = []
         tags = plan.plan_ptag_plans.all()
         for tag in tags:
             item["tags"].append(tag.name)
-        tmp = Good.objects.filter(user=user,type=1,target=plan.id)
-        if len(tmp) > 0:
-            item["isGood"] = 1
-        tmp = plan.members.filter(openId=userId)
-        if len(tmp) > 0:
+        tmp = plan.members.filter(openId=userId).count()
+        if tmp > 0:
             item["isFollow"] = 1
         if plan.finished == 1:
             item["isFinished"] = 1
@@ -156,8 +153,16 @@ def submit_make(request):
     userId = request.POST["userId"]
     user = User.objects.get(openId=userId)
     now = basic_tools.getNow()
-    plan = Plan(name=request.POST["plan_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13]),endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),goal=request.POST["goal"],owner=user)
+    plan = Plan(name=request.POST["plan_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13]),endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),owner=user)
+    if request.POST["goal"] == "":
+        goal = 0
+    else:
+        goal = int(request.POST["goal"])
+    plan.goal=goal
     plan.save()
+    if goal > 0:
+        progress = PlanProgress(plan=plan,user=user)
+        progress.save()
     tags = []
     tag = request.POST["tags"]
     if not tag == "":
@@ -263,11 +268,14 @@ def plan_follow(request):
         user = User.objects.get(openId=userId)
         target = request.GET["target"]
         plan = Plan.objects.get(id=target)
-        tmp = plan.members.filter(openId=userId)
-        if len(tmp) == 0:
+        tmp = plan.members.filter(openId=userId).count()
+        if tmp == 0:
             plan.members.add(user)
+            progress = PlanProgress(plan=plan,user=user)
+            progress.save()
         else:
             plan.members.remove(user)
+            PlanProgress.objects.filter(plan=plan,user=user).delete()
         return HttpResponse("success")
     except:
         return HttpResponse("error")
@@ -292,14 +300,17 @@ def plan_profile(request):
     data["startTime"] = plan.startTime
     data["endTime"] = plan.endTime
     data["description"] = plan.description
+    data["goods"] = plan.goods
+    data["id"] = plan.id
     if not plan.goal == 0:
         data["goal"] = plan.goal
+        data["progress_value"] = tools.getProgress(plan, user)
     tags = plan.plan_ptag_plans.all()
     data["tags"] = []
     for tag in tags:
         data["tags"].append(tag.name)
-    tmp = plan.members.filter(openId=userId)
-    if len(tmp) > 0:
+    tmp = plan.members.filter(openId=userId).count()
+    if tmp > 0:
         data["isFollow"] = 1
     if plan.finished == 1:
         data["isFinished"] = 1
