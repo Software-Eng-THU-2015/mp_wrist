@@ -9,7 +9,12 @@ $('.follow.button').
 var userId = $("#userId").attr("userId");
 
 $('.follow.button').click(function(){
-   $(this).toggleClass('blue');
+   var node = $(this);
+   node.toggleClass('blue');
+   if(node.hasClass("blue"))
+       node.html('<i class="paw icon"></i>Following');
+   else
+       node.html('<i class="paw icon"></i>Follow');
    var URL = domain + "/plan/data/follow?&user=" + userId + "&target=" + $(this).attr("userId");
    getData(URL, function(){});
 });

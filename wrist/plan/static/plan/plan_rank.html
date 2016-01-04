@@ -104,10 +104,10 @@
   </div>
   <div class="box"></div>
     <div class="foot">
-      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
-      <button><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
-      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
-      <button><span class="typcn typcn-home"></span><br><span id="fb_my">我的</span></button>
+      <button page="0"><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
+      <button page="1"><span class="typcn typcn-sort-numerically-outline"></span><br><span id="fb_rank">排行</span></button>
+      <button page="2"><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+      <button page="3"><span class="typcn typcn-home"></span><br><span id="fb_my">我的</span></button>
     </div>
   </script>
   <script src="/static/js/handlebars.min.js"></script>
@@ -144,7 +144,7 @@
             $(".box").height($(".foot").height());
             yepnope({
                 test: true,
-                yep: ["/static/plan/js/plan_rank.js", "/static/js/footer.js"]
+                yep: ["/static/plan/js/plan_square.js", "/static/js/footer.js"]
             });
             }
         });

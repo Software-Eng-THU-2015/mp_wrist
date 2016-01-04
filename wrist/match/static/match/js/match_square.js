@@ -13,7 +13,7 @@ $('.follow.button').click(function(){
       node.toggleClass('blue');
   }
   else{
-      var tpl = $($(".template")[1]).html();
+      var tpl = $(".template").html();
       var template = Handlebars.compile(tpl);
       getData(URL.replace("join","list"), function(data){
       var json = eval("(" + data + ")");

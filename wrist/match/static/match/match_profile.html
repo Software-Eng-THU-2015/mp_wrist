@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/static/css/semantic.min.css" />
     <link rel="stylesheet" href="/static/css/typicons.min.css" />
     <link rel="stylesheet" href="/static/css/fonter.css" />
-	<title>比赛说明</title>
+	<title>姣旇禌璇存槑</title>
 	<style type="text/css">
 	 body {
 	   background-color:#DADADA;
@@ -41,9 +41,9 @@
     </div>
     <div class="content">
       <div class="header">{{title}}</div>
-      <i class="calendar icon"></i>竞赛时间
+      <i class="calendar icon"></i>绔炶禌鏃堕棿
       <p>{{startTime}}-{{endTime}}</p>
-      <i class="write square icon"></i>竞赛说明
+      <i class="write square icon"></i>绔炶禌璇存槑
       <p>{{description}}</p>
       <div class="description">
       {{#each tags}}
@@ -75,9 +75,9 @@
     <div class="join-group" style="display: none">
     </div>
     <div class="foot">
-      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">创建</span></button>
-      <button><span class="typcn typcn-th-large"></span><br><span id="fb_rank">进度</span></button>
-      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">广场</span></button>
+      <button><span class="typcn typcn-plus"></span><br><span id="fb_make">鍒涘缓</span></button>
+      <button><span class="typcn typcn-th-large"></span><br><span id="fb_rank">杩涘害</span></button>
+      <button><span class="typcn typcn-th-menu"></span><br><span id="fb_square">骞垮満</span></button>
     </div>
   <script src="/static/js/semantic.min.js"></script>
   <script src="/static/match/js/match_square.js" ></script>
@@ -126,7 +126,7 @@
                     "modal" aria-hidden="true">&times;
                     </button>
                     <h4 class="modal-title" id="matchModalLabel">
-                        选择你的队伍
+                        閫夋嫨浣犵殑闃熶紞
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -138,13 +138,13 @@
                     {{/members}}
                     </div>
                    {{/team}}
-                   <input type="radio" name="team" value="-1">自己组队
+                   <input type="radio" name="team" value="-1">鑷繁缁勯槦
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal">鍏抽棴
                     </button>
                     <button type="button" class="submit btn btn-primary">
-                        确认
+                        纭
                     </button>
                 </div>
            </div>

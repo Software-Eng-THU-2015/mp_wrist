@@ -78,6 +78,7 @@ def plan_own(request):
     plans = user.user_plan_owner.all()[:20]
     for plan in plans:
         item = {}
+        item["id"] = plan.id
         item["createTime"] = basic_tools.getCreateTime(plan.createTime)
         item["title"] = plan.name
         item["description"] = plan.description
@@ -111,6 +112,7 @@ def plan_square(request):
     plans = Plan.objects.all()[:20]
     for plan in plans:
         item = {}
+        item["id"] = plan.id
         item["user_image"] = plan.owner.image
         item["user_name"] = plan.owner.name
         item["createTime"] = basic_tools.getCreateTime(plan.createTime)
@@ -158,6 +160,7 @@ def submit_make(request):
     plan.image = file_name
     plan.save()
     tags = request.POST["tag"]
+    print request.POST["tag"]
     for tag in tags:
         item = PTag.objects.filter(name=tag)
         if len(item) == 0:
@@ -166,7 +169,7 @@ def submit_make(request):
         else:
             item = item[0]
         item.plans.add(plan)
-    return HttpResponseRedirect("/plan/redirect?page=4&id=%d" % plan.id)
+    return HttpResponseRedirect("/plan/redirect/profile?page=4&id=%d" % plan.id)
 
 def plan_rank(request):
     if not "userId" in request.session:

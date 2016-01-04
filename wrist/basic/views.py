@@ -220,6 +220,7 @@ def data_profile(request):
     {"period":[{"type_text":u"日距离","nav_distance":True,"type":"Days"},{"type_text":u"周距离","nav_distance":True,"type":"Weeks"},{"type_text":u"月距离","nav_distance":True,"type":"Months"}],"type":"Dis","num":3},
     {"period":[{"type_text":u"日睡眠","nav_sleep":True,"type":"Days"},{"type_text":u"周睡眠","nav_sleep":True,"type":"Weeks"},{"type_text":u"月睡眠","nav_sleep":True,"type":"Months"}],"type":"Sleep","num":4},
     ]
+    data["report"] = user.comment
     data["chart_data"] = {"day":[],"week":[],"month":[]}
     date = tools.getDate()
     for i in xrange(7):

@@ -28,7 +28,7 @@ def redirect_match(request):
     elif page == 3:
         url = "profile"
         id = request.GET["id"]
-        userId = "%s%s" % (id, userId)
+        userId = "%s&%s" % (id, userId)
     url = "/static/match/match_%s.html?%s" % (url, userId)
     return HttpResponseRedirect(url)
 
@@ -88,7 +88,7 @@ def submit_make(request):
         else:
             item = item[0]
         item.matchs.add(match)
-    return HttpResponseRedirect("/match/redirect?page=3&id=%d" % match.id)
+    return HttpResponseRedirect("/match/redirect/profile?page=3&id=%d" % match.id)
 
 def match_square(request):
     if not "userId" in request.session:
