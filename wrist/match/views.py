@@ -98,7 +98,7 @@ def match_square(request):
         return HttpResponse(json.dumps(data), content_type="application/json")
     if not "userId" in request.GET:
         data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
-        return HttpResponse(json.dumps(data, content_type="application/json")
+        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
@@ -146,7 +146,7 @@ def match_check(request):
         return HttpResponse(json.dumps(data), content_type="application/json")
     if not "userId" in request.GET:
         data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
-        return HttpResponse(json.dumps(data, content_type="application/json")
+        return HttpResponse(json.dumps(data), content_type="application/json")
     if not request.GET["userId"] == request.session["userId"]:
         data = {"error":{"title":u"权限不足","content":u"你无法查看别人的比赛"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -186,7 +186,7 @@ def match_profile(request):
         return HttpResponse(json.dumps(data), content_type="application/json")
     if not "userId" in request.GET:
         data = {"error":{"title":u"出错啦","content":u"这个页面找不到啦!"}}
-        return HttpResponse(json.dumps(data, content_type="application/json")
+        return HttpResponse(json.dumps(data), content_type="application/json")
     data = {}
     userId = data["userId"] = request.session["userId"]
     user = User.objects.get(openId=userId)
