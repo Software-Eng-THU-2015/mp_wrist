@@ -2,6 +2,10 @@ $("input").blur(function(e){
     var userId = $("#userId").attr("userId");
     var node = $(this);
     var val = parseInt(this.value);
+    if(!val){
+        this.value = node.attr("init");
+        return;
+    }
     var max = parseInt(node.attr("max"));
     var min = parseInt(node.attr("min"));
     if(val < min || val > max)

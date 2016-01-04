@@ -34,6 +34,7 @@
      </div>
      </div>
 	 </a>
+     <br><br><br>
   <div class="ui link centered cards">
   {{#data_list}}
   <div class="card">
@@ -107,7 +108,7 @@
                 });
             }
             else{
-            $("body").html(template(json));
+            $(".body").html(template(json));
             $(".box").height($(".foot").height());
             yepnope({
                 test: true,

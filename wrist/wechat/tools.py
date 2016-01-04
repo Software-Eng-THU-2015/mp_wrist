@@ -34,6 +34,7 @@ template_id = {
   "archive": os.environ.get("TMP_ID_ARCHIVE"),
   "recommand": os.environ.get("TMP_ID_RECOMMAND"),
   "profile": os.environ.get("TMP_ID_PROFILE"),
+  "invite": os.environ.get("TMP_ID_INVITE"),
 }
 
 #校验签名是否正确

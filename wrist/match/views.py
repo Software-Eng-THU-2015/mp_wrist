@@ -11,10 +11,13 @@ from basic.models import User, Good, Team
 from basic import tools as basic_tools
 from wechat import tools as wechat_tools
 from models import Match, MTag
+import tools
 
 # Create your views here.
 
 def redirect_match(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         return HttpResponseRedirect("/static/not_bind.html")
     page = int(request.GET["page"])
@@ -33,6 +36,8 @@ def redirect_match(request):
     return HttpResponseRedirect(url)
 
 def match_make(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -63,25 +68,14 @@ def match_make(request):
     
 @csrf_exempt
 def submit_make(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     userId = request.POST["userId"]
     user = User.objects.get(openId=userId)
     now = basic_tools.getNow()
     match = Match(title=request.POST["match_name"],description=request.POST["comment"],createTime=now,startTime=basic_tools.DateToInt("%s:00:00" % request.POST["begintime"][:13]),endTime=basic_tools.DateToInt("%s:00:00" % request.POST["endtime"][:13]),creator=user)
-    prefix = os.environ.get("WRIST_HOME")
-    path = "/media/match/"
-    if not os.path.exists(prefix+path):
-        os.mkdir(prefix+path)
-    if "images" in request.FILES:
-        file = request.FILES["image"]
-        file_name = "%s%s_%s_%s" % (path, match.title.encode("utf-8"), str(now), file.name.encode("utf-8"))
-        des = open(prefix+file_name, "wb")
-        for chunk in file.chunks():
-            des.write(chunk)
-        des.close()
-    else:
-        file_name = "/static/img/plan_make.jpg"
-    match.image = file_name
     match.save()
+    tags = []
     tag = request.POST["tags"]
     if not tag == "":
         item = MTag.objects.filter(name=tag)
@@ -90,7 +84,9 @@ def submit_make(request):
             item.save()
         else:
             item = item[0]
-        item.matchs.add(match)
+        if !item.matchs.filter(id=match.id).exists():
+            tags.append(tag)
+            item.matchs.add(match)
     i = 0
     while ("tag%d" % i) in request.POST:
         tag = request.POST["tag%d" % i]
@@ -102,13 +98,39 @@ def submit_make(request):
                 item.save()
             else:
                 item = item[0]
-            item.matchs.add(match)
+            if !item.matchs.filter(id=match.id).exists():
+                tags.append(tag)
+                item.matchs.add(match)
     match.user_members.add(user)
     team = user.user_team_members.get(type=0)
     match.members.add(team)
+    prefix = os.environ.get("WRIST_HOME")
+    path = "/media/match/"
+    if not os.path.exists(prefix+path):
+        os.mkdir(prefix+path)
+    if "image" in request.FILES:
+        file = request.FILES["image"]
+        file_name = "%s%s_%s_%s" % (path, match.title.encode("utf-8"), str(now), file.name.encode("utf-8"))
+        des = open(prefix+file_name, "wb")
+        for chunk in file.chunks():
+            des.write(chunk)
+        des.close()
+    else:
+        file_name = tools.getDefaultImageByTag(tags)
+    match.image = file_name
+    i = 0
+    while ("friend%d" % i) in request.POST:
+        tools.sendInvite(user, plan.id, request.POST["friend%d" % i], 0)
+        i += 1
+    i = 0
+    while ("opponent%d" % i) in request.POST:
+        tools.sendInvite(user, plan.id, request.POST["opponent%d" % i], 1)
+        i += 1
     return HttpResponseRedirect("/match/redirect/profile?page=3&id=%d" % match.id)
 
 def match_square(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -147,6 +169,8 @@ def match_square(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
     
 def match_check(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -186,6 +210,8 @@ def match_check(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 def match_profile(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -218,6 +244,8 @@ def match_profile(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
     
 def match_join(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         return HttpResponse("error")
     if not "userId" in request.GET:
@@ -250,6 +278,8 @@ def match_join(request):
     return HttpResponse("success")
         
 def match_list(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")

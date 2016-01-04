@@ -18,6 +18,8 @@ def get_session(request):
     return HttpResponse(userId)
 
 def redirect_profile(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         return HttpResponseRedirect("/static/not_bind.html")
     try:
@@ -48,6 +50,8 @@ def bind(request):
         return HttpResponseRedirect("/static/basic/data_bind.html")
 
 def data_rank(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -94,6 +98,8 @@ def data_rank(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 def data_today(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号页面绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -141,6 +147,8 @@ def data_today(request):
     return HttpResponse(json.dumps(data), content_type="application/json") 
 
 def data_friend(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号页面绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -164,6 +172,8 @@ def data_friend(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 def data_good(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
 #    try:
     if not "userId" in request.session:
         return HttpResponse("error")
@@ -194,6 +204,8 @@ def data_good(request):
 #        return HttpResponse("error")
 
 def data_profile(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         data = {"error":{"title":u"未绑定","content":u"请先到公众号页面绑定手环"}}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -209,6 +221,10 @@ def data_profile(request):
     data["image"] = user.image
     data["name"] = user.name
     data["level"] = user.level
+    data["height"] = user.height
+    data["weight"] = user.weight
+    data["dayPlan"] = user.dayPlan
+    data["sleepPlan"] = user.sleepPlan
     data["archives"] = []
     archives = user.user_archive_owners.all()
     for archive in archives:
@@ -346,6 +362,8 @@ def data_profile(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
     
 def friend_add(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
 #    try:
     if not "userId" in request.session:
         return HttpResponse("error")
@@ -368,6 +386,8 @@ def friend_add(request):
 #        return HttpResponse("error")
 
 def profile_data(request):
+    if os.environ.get("TEST", None):
+        request.session["userId"] = request.GET["userId"]
     if not "userId" in request.session:
         return HttpResponse("error")
     if not "userId" in request.GET:
