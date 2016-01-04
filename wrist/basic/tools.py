@@ -80,3 +80,6 @@ def today_Calories(user):
 
 def caloriesToStep(calories, height, weight):
     return calories
+
+def teamName(team, user):
+    return user.name
