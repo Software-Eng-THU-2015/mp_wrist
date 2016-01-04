@@ -87,4 +87,4 @@ class PreFriend(models.Model):
     target = models.ForeignKey(User, related_name="user_prefriend_target")
     
     def __unicode__(self):
-        return "%s_%s" % (user.name, target.name)
+        return "%s_%s" % (self.user.name, self.target.name)

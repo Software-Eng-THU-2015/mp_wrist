@@ -31,4 +31,4 @@ class MatchProgress(models.Model):
     value = models.IntegerField(default=0)
     
     def __unicode__(self):
-        return "%s_%s" % (user.name, match.title)
+        return "%s_%s" % (self.user.name, self.match.title)

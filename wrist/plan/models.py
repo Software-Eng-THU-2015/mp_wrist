@@ -32,4 +32,4 @@ class PlanProgress(models.Model):
     value = models.IntegerField(default=0)
     
     def __unicode__(self): 
-        return "%s_%s" % (user.name, plan.name)
+        return "%s_%s" % (self.user.name, self.plan.name)
