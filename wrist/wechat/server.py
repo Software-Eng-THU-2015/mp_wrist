@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from wechatpy import parse_message, create_reply
 from wechatpy.replies import TextReply, ImageReply, VoiceReply, VideoReply, MusicReply, ArticlesReply, TransferCustomerServiceReply
-from basic.models import User, DayData
+from basic.models import User, DayData, Team
 from basic import tools as basic_tools
 from match.models import Match
 from match import tools as match_tools
@@ -69,6 +69,9 @@ def subEvent(msg):
             user = users[0]
         else:
             user = User(name=data["nickname"],sex=int(data["sex"]),openId=msg.source)
+            team = Team(name=user.name,type=0)
+            team.save()
+            team.members.add(user)
         user.name = username
         user.uid = int(random.random() * 100)
         if "headimgurl" in data:

@@ -88,6 +88,9 @@ def submit_make(request):
         else:
             item = item[0]
         item.matchs.add(match)
+    match.user_members.add(user)
+    team = user.user_team_members.get(type=0)
+    match.members.add(team)
     return HttpResponseRedirect("/match/redirect/profile?page=3&id=%d" % match.id)
 
 def match_square(request):

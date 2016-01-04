@@ -169,6 +169,7 @@ def submit_make(request):
         else:
             item = item[0]
         item.plans.add(plan)
+    plan.members.add(user)
     return HttpResponseRedirect("/plan/redirect/profile?page=4&id=%d" % plan.id)
 
 def plan_rank(request):

@@ -25,7 +25,7 @@ $("#tags input.form-control")[0].oninput = function(e){
     if(val.indexOf(' ') != -1){
         var content = val.substr(0, val.indexOf(' '));
         node.val('');
-        $("#tags .extra").append("<div class='ui label'>" + content + "</div><input name='tag' value=" + content + " style='display: none'>");
+        $("#tags .extra").append("<div class='ui label'>" + content + "</div><input class='tags hide' name='tag" + $("input.tags.hide").length + "' value=" + content + " style='display: none'>");
     }
 }
 
@@ -55,17 +55,17 @@ function opponentsClick(e){
 
 function tagClick(e){
    var node = $("#tags .extra");
-   node.append("<div class='ui label'>" + this.textContent + "</div><input name='tag' value=" + this.textContent + " style='display: none'>");
+   node.append("<div class='ui label'>" + this.textContent + "</div><input class='tags hide' name='tag" + $("input.tags.hide").length + "' value=" + this.textContent + " style='display: none'>");
 }
 
 function friendClick(e){
    var node = $("#friends .extra");
-   node.append("<div class='ui label'>" + this.textContent + "</div><input name='friend' value=" + $(this).attr("userId") + " style='display: none'>");
+   node.append("<div class='ui label'>" + this.textContent + "</div><input class='friends hide' name='friend" + $("input.friends.hide").length + "' value=" + this.textContent + " style='display: none'>");
 }
 
 function opponentClick(e){
    var node = $("#opponents .extra");
-   node.append("<div class='ui label'>" + this.textContent + "</div><input name='opponent' value=" + $(this).attr("userId") + " style='display: none'>");
+   node.append("<div class='ui label'>" + this.textContent + "</div><input class='opponents hide' name='opponent" + $("input.opponents.hide").length + "' value=" + this.textContent + " style='display: none'>");
 }
 
 if(touch){
