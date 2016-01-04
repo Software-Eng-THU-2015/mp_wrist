@@ -7,12 +7,13 @@ from wechat import tools as wechat_tools
 
 class TestUpdateUserData(TestCase):
     def setUp(self):
-        self.user = User.objects.all()[0]
+        self.user = User(openId="ose6Ut8Ir-41wB7gQx89BifYa49Q",name="test")
+        self.user.save()
         self.value = [100,50,25,12]
     
     def test_update_height(self):
         conn = httplib.HTTPConnection(wechat_tools.domain[7:])
-        conn.request("GET", "/basic/profile/data?userId=%d&type=0&value=%d" % (self.user.openId, self.value[0]))
+        conn.request("GET", "/basic/profile/data?userId=%s&type=0&value=%d" % (self.user.openId, self.value[0]))
         res = conn.getresponse()
         
         self.assertEqual(res.status, 200)
@@ -21,7 +22,7 @@ class TestUpdateUserData(TestCase):
     
     def test_update_weight(self):
         conn = httplib.HTTPConnection(wechat_tools.domain[7:])
-        conn.request("GET", "/basic/profile/data?userId=%d&type=1&value=%d" % (self.user.openId, self.value[1]))
+        conn.request("GET", "/basic/profile/data?userId=%s&type=1&value=%d" % (self.user.openId, self.value[1]))
         res = conn.getresponse()
         
         self.assertEqual(res.status, 200)
@@ -30,7 +31,7 @@ class TestUpdateUserData(TestCase):
     
     def test_update_dayPlan(self):
         conn = httplib.HTTPConnection(wechat_tools.domain[7:])
-        conn.request("GET", "/basic/profile/data?userId=%d&type=2&value=%d" % (self.user.openId, self.value[2]))
+        conn.request("GET", "/basic/profile/data?userId=%s&type=2&value=%d" % (self.user.openId, self.value[2]))
         res = conn.getresponse()
         
         self.assertEqual(res.status, 200)
@@ -39,7 +40,7 @@ class TestUpdateUserData(TestCase):
     
     def test_update_sleepPlan(self):
         conn = httplib.HTTPConnection(wechat_tools.domain[7:])
-        conn.request("GET", "/basic/profile/data?userId=%d&type=3&value=%d" % (self.user.openId, self.value[3]))
+        conn.request("GET", "/basic/profile/data?userId=%s&type=3&value=%d" % (self.user.openId, self.value[3]))
         res = conn.getresponse()
         
         self.assertEqual(res.status, 200)

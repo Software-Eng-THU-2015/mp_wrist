@@ -8,19 +8,20 @@ from wechat import tools as wechat_tools
 
 class TestUpdateUserData(TestCase):
     def setUp(self):
-        self.user = User.objects.all()[0]
+        self.user = User(openId="ose6Ut8Ir-41wB7gQx89BifYa49Q",name="test")
+        self.user.save()
         self.data = {
-        "match_name": u"测试比赛_名字",
+        "match_name": "test_name",
         "begintime": u"2016-01-01 10:10",
         "endtime": u"2016-01-04 10:10",
-        "tag0": u"测试_比赛_标签_0",
-        "tag1": u"测试_比赛_标签_1",
-        "tags": u"测试_比赛_标签_left",
+        "goal": 10000,
+        "tag0": "test_tag_0",
+        "tag1": "test_tag_1",
+        "tags": "test_tag_s",
         "friend0": self.user.openId,
         "opponent0": self.user.openId,
-        "comment": u"测试_比赛_描述"
-        }
-        self.ld = Match.objects.all().count()
+        "comment": "test_comment"
+        }=
         conn = httplib.HTTPConnection(wechat_tools.domain[7:])
         params = urllib.urlencode({
         "userId":self.user.openId,
@@ -38,5 +39,5 @@ class TestUpdateUserData(TestCase):
         res = conn.getresponse()
     
     def test_plan_create(self):
-        self.assertEqual(self.ld+1, Match.objects.all().count())
+        self.assertEqual(1, Match.objects.all().count())
         
