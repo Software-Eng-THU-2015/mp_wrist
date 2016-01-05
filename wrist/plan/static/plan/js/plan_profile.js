@@ -2,7 +2,7 @@ var userId = $("#userId").attr("userId");
 
 $('.follow.button').click(function(){
   var node = $(this);
-  var URL = domain + "/plan/data/follow?userId=" + userId + "&target=" + $(this).attr("userId");
+  var URL = domain + "/plan/data/follow?user=" + userId + "&target=" + $(this).attr("userId");
   getData(URL, function(){});
   node.toggleClass("btn-success");
   node.toggleClass("btn-danger");

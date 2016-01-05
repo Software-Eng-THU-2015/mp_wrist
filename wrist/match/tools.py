@@ -35,7 +35,7 @@ def getProgress(match, user):
     return result
     
 def getDefaultImageByTag(tags):
-    return "/static/img/match_make.jpg"
+    return "/static/img/match_default.jpg"
     
 def sendInvite(user, id, friendId, type):
     url = "%s/match/redirect/profile?page=3&id=%d" % (wechat_tools.domain, id)

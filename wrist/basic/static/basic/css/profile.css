@@ -109,6 +109,7 @@ input {
     width: 100%;
     position: relative;
     border: 0;
+    min-height: 
 }
 
 .ui-dialog-contain{
@@ -129,4 +130,16 @@ input {
 
 .match {
     border: 1px solid green;
+}
+
+div.ui-header.ui-bar-a, a.ui-link.ui-btn, button.friend{
+    font-size: 2rem;
+}
+
+div.ui-navbar{
+    font-size:1.5rem;
+}
+
+a.button.ui-link{
+    font-size:1.2rem;
 }

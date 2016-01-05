@@ -3,7 +3,7 @@ var userId = $("#userId").attr("userId");
 $('.follow.button').click(function(){
   var node = $(this);
   var URL = domain + "/match/join?userId=" + userId + "&target=" + $(this).attr("userId");
-  if(node.hasClass('btn-success')){
+  if(node.hasClass('btn-danger')){
       getData(URL, function(){});
       node.toggleClass("btn-success");
       node.toggleClass("btn-danger");

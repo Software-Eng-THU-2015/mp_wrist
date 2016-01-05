@@ -4,6 +4,8 @@ import time
 import json
 from models import User, DayData
 
+levelGap = [1000,5000,10000,20000,40000,80000,160000,320000,640000,1280000,2560000,5120000]
+
 bong_activity = [
   [u"睡眠", u"深睡眠", u"浅睡眠", u"清醒"],
   [u"剧烈运动", u"热身运动", u"健走", u"球类等运动", u"跑步", u"游泳", u"自行车"],
@@ -90,16 +92,28 @@ def getCreateTime(createTime):
         return u"%d 秒前" % sec
 
 def caloriesToStep(calories, height, weight):
-    return calories
+    if height == 0:
+        height = 170
+    if weight == 0:
+        weight = 60
+    return calories * 60 * 170 * 1000 / (height * weight * 250)
 
 def stepToCalories(steps, height, weight):
-    return steps
+    if height == 0:
+        height = 170
+    if weight == 0:
+        weight = 60
+    return steps * height * weight * 250 / (60 * 170 * 1000)
     
 def caloriesToDis(calories, height, weight):
-    return calories
+    if height == 0:
+        height = 170
+    if weight == 0:
+        weight = 60
+    return calories * 60 * 170 * 1000 * 2 / (height * weight * 250 * 1000)
   
 def stepToDis(steps, height, weight):
-    return steps
+    return steps * 2 / 1000
     
 def updateDayData(dayData, user):
     s = user.dayPlan

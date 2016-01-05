@@ -82,10 +82,10 @@ def plan_own(request):
     user = User.objects.get(openId=userId)
     data["href"] = "%s/plan/redirect/profile" % wechat_tools.domain
     data["data_list"] = []
-    ld = user.user_plan_owner.all().count()
+    ld = user.user_plan_members.all().count()
     if ld < 20:
         ld = 20
-    plans = user.user_plan_owner.all()[ld-20:]
+    plans = user.user_plan_members.all()[ld-20:]
     for plan in plans:
         item = {}
         item["id"] = plan.id
@@ -195,6 +195,17 @@ def submit_make(request):
             if not item.plans.filter(id=plan.id).exists():
                 tags.append(tag)
                 item.plans.add(plan)
+    if len(tags) == 0 and goal > 0:
+        tag = "%d步" % goal
+        item = PTag.objects.filter(name=tag)
+        if len(item) == 0:
+            item = PTag(name=tag)
+            item.save()
+        else:
+            item = item[0]
+        if not item.plans.filter(id=plan.id).exists():
+            tags.append(tag)
+            item.plans.add(plan)
     prefix = os.environ.get("WRIST_HOME")
     path = "/media/plan/"
     if not os.path.exists(prefix+path):

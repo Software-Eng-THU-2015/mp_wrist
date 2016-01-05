@@ -80,7 +80,7 @@ def data_rank(request):
         flag = Good.objects.filter(user=owner,type=0,target=user.id)
         if len(flag) > 0:
             item["isGood"] = 1
-        item["userId"] = user.id
+        item["userId"] = user.openId
         item["num"] = 0
         item["username"] = user.name
         item["image"] = user.image
@@ -383,7 +383,7 @@ def friend_add(request):
     result = "success"
     userId = request.GET["userId"]
     user = User.objects.get(openId=userId)
-    id = int(request.GET["target"])
+    id = request.GET["target"]
     type = int(request.GET["type"])
     if type == 0:
         target = User.objects.get(openId=id)

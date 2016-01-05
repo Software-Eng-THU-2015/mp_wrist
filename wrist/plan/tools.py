@@ -12,7 +12,7 @@ def getProgress(plan, user):
         return progress[0].value
 
 def getDefaultImageByTag(tags):
-    return "/static/img/plan_make.jpg"
+    return "/static/img/plan_default.jpg"
     
 def sendInvite(user, id, friendId):
     url = "%s/plan/redirect/profile?page=4&id=%d" % (wechat_tools.domain, id)

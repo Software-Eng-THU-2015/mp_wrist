@@ -12,26 +12,26 @@ $(".friend").click(function(){
     var node = $(this);
     var flag = 0;
     if(node.hasClass("btn-danger")) flag = 1;
-    var url = domain + "/basic/add/friend?userId=" + userId + "&target=" + node.attr("userId") + "&type=" + str(flag);
+    var url = domain + "/basic/add/friend?userId=" + userId + "&target=" + node.attr("userId") + "&type=" + flag;
     getData(url, function(data){
         if(data == "success"){
             node.toggleClass("btn-danger");
             node.toggleClass("btn-success");
             if(node.hasClass("btn-danger")){
-                sweetAlert("²Ù×÷³É¹¦","³É¹¦Ìí¼ÓºÃÓÑ","success");
-                node.html("É¾³ıºÃÓÑ");
+                sweetAlert("æ“ä½œæˆåŠŸ","æˆåŠŸæ·»åŠ å¥½å‹","success");
+                node.html("åˆ é™¤å¥½å‹");
             }
             else{
-                sweetAlert("²Ù×÷³É¹¦","³É¹¦É¾³ıºÃÓÑ","success");
-                node.html("¼ÓÎªºÃÓÑ");
+                sweetAlert("æ“ä½œæˆåŠŸ","æˆåŠŸåˆ é™¤å¥½å‹","success");
+                node.html("åŠ ä¸ºå¥½å‹");
             }
             
         }
         else if(data == "send"){
-            sweetAlert("²Ù×÷³É¹¦","ºÃÓÑÇëÇó·¢ËÍ³É¹¦!","success");
+            sweetAlert("æ“ä½œæˆåŠŸ","å¥½å‹è¯·æ±‚å‘é€æˆåŠŸ!","success");
         }
         else{
-            sweetAlert("³ö´íÀ²","ÇëÇó³ö´íÀ²£¡","error");
+            sweetAlert("å‡ºé”™å•¦","è¯·æ±‚å‡ºé”™å•¦ï¼","error");
         }
     });
 });

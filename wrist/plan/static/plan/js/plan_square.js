@@ -1,11 +1,3 @@
-$('.follow.button').
-	state({
-	    text:{
-		inactive : '<i class="paw icon"></i>Follow',
-		active: '<i class="paw icon"></i>Following'
-	    }
-	});
-    
 var userId = $("#userId").attr("userId");
 
 $('.follow.button').click(function(){

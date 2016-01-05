@@ -1,3 +1,4 @@
+#-*- coding=utf-8 -*-
 import json
 import httplib
 from django.core.management.base import BaseCommand, CommandError
@@ -61,7 +62,7 @@ def PlanCheck(user, plan, progress, oldValue):
         old_per = int(oldValue * 100 / plan.goal)
     if per > 100:
         per = 100
-    if per = 100:
+    if per == 100:
         plan.finished = 1
         plan.save()
         data = {
