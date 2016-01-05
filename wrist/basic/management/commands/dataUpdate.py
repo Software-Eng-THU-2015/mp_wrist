@@ -141,8 +141,15 @@ def PlanCheck(user, plan, progress, oldValue):
 
 def PlansCheck(user, data):
     plans = user.user_plan_members.filter(finished=0)
+    now = tools.getNow()
     for plan in plans:
-        progress = PlanProgress(plan=plan,user=user)
+        if plan.startTime < now:
+            continue
+        progress = PlanProgress.filter(plan=plan,user=user)
+        if progress.count() > 0:
+            progress = progress[0]
+        else:
+            continue
         oldValue = progress.value
         progress.value += tools.caloriesToStep(data.calories, user.height, user.weight)
         progress.save()
@@ -192,8 +199,15 @@ def MatchCheck(user, match, progress):
  
 def MatchsCheck(user, data):
     matchs = user.user_match_members.filter(finished=0)
+    now = tools.getNow()
     for match in matchs:
-        progress = MatchProgress(match=match,user=user)
+        if match.startTime < now:
+            continue
+        progress = MatchProgress.filter(match=match,user=user)
+        if progress.count() > 0:
+            progress = progress[0]
+        else:
+            continue
         progress.value += tools.caloriesToStep(data.calories, user.height, user.weight)
         progress.save()
         MatchCheck(user, match, progress)
@@ -209,7 +223,7 @@ def getData(uid, date):
 
 def contains(user, data):
     tmp = Data.objects.filter(user=user,bongdata_id=data["id"])
-    return len(tmp) > 0
+    return tmp.count() > 0
 
 def dataUpdate(data):
     try:
