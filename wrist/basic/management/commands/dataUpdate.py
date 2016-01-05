@@ -12,7 +12,7 @@ def ArchiveCheck(user, data):
     return
     
 def LevelCheck(user, data):
-    user.steps += tool.caloriesToStep(data.calories, user.height, user.weight)
+    user.steps += tools.caloriesToStep(data.calories, user.height, user.weight)
     user.save()
     flag = False
     while user.steps > tools.levelGap[user.level]:
