@@ -327,6 +327,8 @@ def plan_profile(request):
     data["tags"] = []
     for tag in tags:
         data["tags"].append(tag.name)
+    if Good.objects.filter(user=user,type=1,target=plan.id).count() > 0:
+        data["isGood"] = 1
     tmp = plan.members.filter(openId=userId).count()
     if tmp > 0:
         data["isFollow"] = 1

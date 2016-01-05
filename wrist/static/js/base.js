@@ -21,5 +21,5 @@ function postData(url, data, callback)
     xhr.send(data);
 }
 
-//domain = "http://softeng3.zjzs.levy.at";
-domain = "http://wrist.ssast2015.com";
+domain = "http://softeng3.zjzs.levy.at";
+//domain = "http://wrist.ssast2015.com";
