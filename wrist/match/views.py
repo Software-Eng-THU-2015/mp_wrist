@@ -231,6 +231,8 @@ def match_profile(request):
     data["endTime"] = basic_tools.IntToDate(match.endTime)
     if match.finished == 1:
         data["isFinished"] = 1
+    if basic_tools.getNow() > match.startTime:
+        data["isStarted"] = 1
     data["tags"] = []
     tags = match.match_mtag_matchs.all()
     for tag in tags:
