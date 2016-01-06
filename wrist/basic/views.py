@@ -249,7 +249,7 @@ def data_profile(request):
                 break
             item = item[0]
             it = {}
-            it["date"] = tools.IntToDate(date)
+            it["date"] = tools.DateToStr(date)
             it["step_value"] = item.steps
             it["step_object"] = item.steps_goal
             it["cal_value"] = item.calories
@@ -267,7 +267,7 @@ def data_profile(request):
             if len(item) == 0:
                 break
             it = {}
-            it["date"] = tools.IntToDate(date)
+            it["date"] = tools.DateToStr(date)
             step_value = step_object = cal_value = cal_object = dis_value = dis_object = sleep_value = sleep_object = 0
             for j in xrange(7):
                 item = item[0]

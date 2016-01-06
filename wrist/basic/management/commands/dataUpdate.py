@@ -145,7 +145,7 @@ def PlansCheck(user, data):
     for plan in plans:
         if plan.startTime < now:
             continue
-        progress = PlanProgress.filter(plan=plan,user=user)
+        progress = PlanProgress.objects.filter(plan=plan,user=user)
         if progress.count() > 0:
             progress = progress[0]
         else:
@@ -203,7 +203,7 @@ def MatchsCheck(user, data):
     for match in matchs:
         if match.startTime < now:
             continue
-        progress = MatchProgress.filter(match=match,user=user)
+        progress = MatchProgress.objects.filter(match=match,user=user)
         if progress.count() > 0:
             progress = progress[0]
         else:

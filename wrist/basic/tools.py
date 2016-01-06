@@ -60,6 +60,12 @@ def DateToInt(date):
     timeA = time.strptime(date, "%Y-%m-%d %H:%M:%S")
     return int(time.mktime(timeA))
     
+def DateToStr(date):
+    year = date / 10000
+    month = date % 10000 / 100
+    day = date % 100
+    return "%4d-%2d-%2d" % (year, month, day)
+    
 def left_time(now, endtime):
     left = endtime - now
     sec = left % 60
