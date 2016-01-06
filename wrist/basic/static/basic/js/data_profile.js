@@ -35,7 +35,7 @@ for(var i = 0;i < chartData.length;i++)
 }
 
 function PaintChart(data, type1, type2){
-    var conType1 = [{minPeriod:"DD",id:"Days",dataDateFormat:"YYYY-MM-DD",dateFormats:[{period: 'DD',format: 'DD'}, {period: 'WW',format: 'MMM DD'}, {period: 'MM',format: 'MMM'}, {period: 'YYYY',format: 'YYYY'}]},{minPeriod:"WW",id:"Weeks",dataDateFormat:"YYYY-MM-DD",dateFormats:[]},{minPeriod:"MM",id:"Months",dataDateFormat:"YYYY-MM",dateFormats:[{period: 'MM',format: 'MMM'}, {period: 'YYYY',format: 'YYYY'}]}];
+    var conType1 = [{minPeriod:"DD",id:"Days",dataDateFormat:"YYYY-MM-DD",dateFormats:[{period: 'DD',format: 'DD'}, {period: 'WW',format: 'MMM DD'}, {period: 'MM',format: 'MMM'}, {period: 'YYYY',format: 'YYYY'}]},{minPeriod:"WW",id:"Weeks",dataDateFormat:"YYYY-MM-DD",dateFormats:[{period: 'DD',format: 'DD'}, {period: 'WW',format: 'MMM DD'}, {period: 'MM',format: 'MMM'}, {period: 'YYYY',format: 'YYYY'}]},{minPeriod:"MM",id:"Months",dataDateFormat:"YYYY-MM",dateFormats:[{period: 'DD',format: 'DD'}, {period: 'WW',format: 'MMM DD'}, {period: 'MM',format: 'MMM'}, {period: 'YYYY',format: 'YYYY'}]}];
     var conType2 = [{title:"步数"},{title:"热量"},{title:"路程"},{title:"睡眠"}];
     
     // SERIAL CHART
