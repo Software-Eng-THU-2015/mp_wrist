@@ -64,7 +64,7 @@ def DateToStr(date):
     year = date / 10000
     month = date % 10000 / 100
     day = date % 100
-    return "%4d-%2d-%2d" % (year, month, day)
+    return "%04d-%02d-%02d" % (year, month, day)
     
 def left_time(now, endtime):
     left = endtime - now
