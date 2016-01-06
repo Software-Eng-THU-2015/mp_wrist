@@ -35,7 +35,7 @@ for(var i = 0;i < chartData.length;i++)
 }
 
 function PaintChart(data, type1, type2){
-    var conType1 = [{minPeriod:"DD",id:"Days"},{minPeriod:"W",id:"Weeks"},{minPeriod:"MM",id:"Months"}];
+    var conType1 = [{minPeriod:"DD",id:"Days"},{minPeriod:"WW",id:"Weeks"},{minPeriod:"MM",id:"Months"}];
     var conType2 = [{title:"步数"},{title:"热量"},{title:"路程"},{title:"睡眠"}];
     
     // SERIAL CHART
